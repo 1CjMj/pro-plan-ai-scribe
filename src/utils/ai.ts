@@ -16,29 +16,44 @@ export const initializeAIModels = async () => {
   }
 };
 
-export const generateTasksFromText = async (description: string, category: string): Promise<Partial<Task>[]> => {
+export const generateTasksFromText = async (description: string, category: string): Promise<Omit<Task, "id" | "projectId" | "createdAt" | "updatedAt">[]> => {
   if (!taskGenerator) {
     throw new Error('Task generator model not initialized');
   }
 
   const prompt = `Generate project tasks for a ${category} project: ${description}\nTasks:`;
-  const result = await taskGenerator(prompt, {
-    max_length: 500,
-    num_return_sequences: 1,
-    temperature: 0.7,
-  });
-
-  const tasksText = result[0].generated_text.split('\n').filter(Boolean);
   
-  return tasksText.map((text: string) => ({
-    title: text.trim(),
-    description: `Auto-generated task: ${text.trim()}`,
-    status: 'not-started' as const,
-    skills: ['AI Generated'],
-    estimatedHours: 8,
-    resources: [],
-    createdBy: 'ai' as const,
-  }));
+  try {
+    const result = await taskGenerator(prompt, {
+      max_length: 500,
+      num_return_sequences: 1,
+      temperature: 0.7,
+    });
+
+    const tasksText = result[0].generated_text.split('\n').filter(Boolean);
+    
+    return tasksText.map((text: string) => ({
+      title: text.trim(),
+      description: `Auto-generated task: ${text.trim()}`,
+      status: 'not-started' as const,
+      skills: ['AI Generated'],
+      estimatedHours: 8,
+      resources: [],
+      createdBy: 'ai' as const,
+    }));
+  } catch (error) {
+    console.error('Error generating tasks:', error);
+    // Return a single fallback task if AI generation fails
+    return [{
+      title: "Review project requirements",
+      description: `Fallback task: Review ${category} project requirements for "${description.substring(0, 30)}..."`,
+      status: 'not-started' as const,
+      skills: ['Planning'],
+      estimatedHours: 4,
+      resources: [],
+      createdBy: 'ai' as const,
+    }];
+  }
 };
 
 export const calculateSkillMatch = async (taskSkills: string[], employeeSkills: string[]): Promise<number> => {
@@ -46,13 +61,26 @@ export const calculateSkillMatch = async (taskSkills: string[], employeeSkills: 
     throw new Error('Skill matcher model not initialized');
   }
 
-  // Get embeddings for both skill sets
-  const taskEmbeddings = await skillMatcher(taskSkills.join(', '));
-  const employeeEmbeddings = await skillMatcher(employeeSkills.join(', '));
+  try {
+    // Get embeddings for both skill sets
+    const taskEmbeddings = await skillMatcher(taskSkills.join(', '));
+    const employeeEmbeddings = await skillMatcher(employeeSkills.join(', '));
 
-  // Calculate cosine similarity between embeddings
-  const similarity = cosineSimilarity(taskEmbeddings[0], employeeEmbeddings[0]);
-  return similarity;
+    // Calculate cosine similarity between embeddings
+    const similarity = cosineSimilarity(taskEmbeddings[0], employeeEmbeddings[0]);
+    return similarity;
+  } catch (error) {
+    console.error('Error calculating skill match:', error);
+    // Fallback to a simple text matching approach
+    const matchCount = employeeSkills.filter(skill => 
+      taskSkills.some(taskSkill => 
+        taskSkill.toLowerCase().includes(skill.toLowerCase()) || 
+        skill.toLowerCase().includes(taskSkill.toLowerCase())
+      )
+    ).length;
+    
+    return matchCount > 0 ? matchCount / Math.max(taskSkills.length, 1) : 0;
+  }
 };
 
 // Helper function to calculate cosine similarity
