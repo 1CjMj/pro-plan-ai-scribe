@@ -1,73 +1,164 @@
-# Welcome to your Lovable project
 
-## Project info
+# ProPlanAI - AI-Powered Project Management Platform
 
-**URL**: https://lovable.dev/projects/e3213aad-e47f-486a-9f79-3300a07e36c5
+ProPlanAI is an advanced project management application that leverages artificial intelligence to automate task generation, resource allocation, and provide insightful analytics for project managers and team members.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+### For Project Managers
 
-**Use Lovable**
+- **AI Task Generation**: Convert project descriptions into detailed task lists with required skills, resources, and estimated time.
+- **Smart Task Allocation**: Automatically assign tasks to team members based on skills matching and resource availability.
+- **Resource Management**: Track and optimize resource allocation across all projects.
+- **Progress Tracking**: Monitor task completion status and overall project progress.
+- **Advanced Analytics**: Gain insights from task completion times, resource usage, and team performance metrics.
+- **Employee Management**: Import employee data and manage their skills profiles.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/e3213aad-e47f-486a-9f79-3300a07e36c5) and start prompting.
+### For Team Members
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Task Dashboard**: View all assigned tasks in one place.
+- **Task Status Updates**: Update task status from "Not Started" to "In Progress" to "Completed".
+- **Project Visibility**: See how individual tasks contribute to the overall project.
 
-**Use your preferred IDE**
+## Project Architecture
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Frontend Components (React + TypeScript)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- **Authentication System**: Secure login and role-based access control.
+- **Dashboard**: Customized views for managers and team members.
+- **Project Management**: Creation, viewing, and management of projects.
+- **Task Management**: Task lists, status updates, and assignments.
+- **Analytics**: Data visualizations using Recharts for project insights.
+- **Resource Management**: Tracking and allocation of project resources.
 
-Follow these steps:
+### Data Storage
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+The current implementation uses local storage for data persistence, allowing users to:
+- Save projects and their associated tasks locally
+- Track project progress and task status
+- Simulate AI features for demonstration purposes
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### AI Integration (Conceptual)
 
-# Step 3: Install the necessary dependencies.
-npm i
+In a production environment, the application would integrate with AI models from HuggingFace Transformers to:
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+1. **Task Generation**: Convert project descriptions into comprehensive task lists.
+   - Model: T5 or GPT-based models for text generation
+   - Input: Project description
+   - Output: Structured list of tasks with details
+
+2. **Skill Matching**: Match employee skills to task requirements.
+   - Model: Sentence-transformer models for semantic matching
+   - Input: Task skills and employee skills
+   - Output: Compatibility scores for matching
+
+3. **Resource Optimization**: Optimize resource allocation across projects.
+   - Model: ML-based optimization models
+   - Input: Resource availability and task requirements
+   - Output: Optimal resource allocation plan
+
+4. **Time Estimation**: Predict task completion times.
+   - Model: Regression models trained on historical project data
+   - Input: Task characteristics and complexity
+   - Output: Estimated hours required
+
+5. **Advanced Analytics**: Generate insights from project data.
+   - Model: Various analytical models for pattern recognition
+   - Input: Project progress and resource usage data
+   - Output: Actionable insights and recommendations
+
+## Technical Implementation
+
+### Core Technologies
+
+- **Framework**: React with TypeScript
+- **Styling**: TailwindCSS with shadcn/ui components
+- **State Management**: React Context API
+- **Routing**: React Router
+- **Charts**: Recharts for data visualization
+- **Icons**: Lucide React
+
+### Project Structure
+
+```
+src/
+├── components/        # Reusable UI components
+│   ├── layout/        # Layout components (Header, Sidebar)
+│   └── ui/            # UI components from shadcn
+├── contexts/          # React contexts for state management
+│   ├── AuthContext.tsx   # Authentication state
+│   └── ProjectContext.tsx # Project management state
+├── pages/             # Application pages
+│   ├── Home.tsx        # Landing page
+│   ├── Dashboard.tsx   # User dashboard
+│   ├── Login.tsx       # Authentication
+│   ├── Projects.tsx    # Project listing
+│   ├── Tasks.tsx       # Task management
+│   └── ...
+└── lib/               # Utility functions
+```
+
+### Key Files
+
+- **AuthContext.tsx**: Manages user authentication and session state
+- **ProjectContext.tsx**: Core business logic for project and task management
+- **Dashboard.tsx**: Main user interface for project overview
+- **ProjectDetail.tsx**: Detailed project view with task management
+- **Analytics.tsx**: Data visualizations and project insights
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 14+ and npm
+
+### Installation
+
+1. Clone the repository:
+```
+git clone https://github.com/yourusername/proplanai.git
+```
+
+2. Navigate to the project directory:
+```
+cd proplanai
+```
+
+3. Install dependencies:
+```
+npm install
+```
+
+4. Start the development server:
+```
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+5. Open your browser and navigate to `http://localhost:8080`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Demo Login Credentials
 
-**Use GitHub Codespaces**
+- **Manager**: Email: manager@example.com, Password: password
+- **Worker**: Email: worker@example.com, Password: password
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Future Enhancements
 
-## What technologies are used for this project?
+1. **Backend Integration**: Connect to a real backend service for data persistence.
+2. **AI Model Integration**: Implement actual HuggingFace Transformers models for AI features.
+3. **Real-time Collaboration**: Add WebSocket integration for live updates.
+4. **Advanced Resource Planning**: Implement more sophisticated resource allocation algorithms.
+5. **Gantt Charts**: Add timeline visualization for project planning.
+6. **Mobile Application**: Develop companion mobile apps for on-the-go access.
 
-This project is built with:
+## License
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+MIT License
 
-## How can I deploy this project?
+## Acknowledgments
 
-Simply open [Lovable](https://lovable.dev/projects/e3213aad-e47f-486a-9f79-3300a07e36c5) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+- [React](https://reactjs.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [TailwindCSS](https://tailwindcss.com/)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [Recharts](https://recharts.org/)
+- [Lucide Icons](https://lucide.dev/)
