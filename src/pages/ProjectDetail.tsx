@@ -72,7 +72,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from '@/components/ui/label';
-import { TaskStatus } from '@/contexts/ProjectContext';
+import { TaskStatus, ProjectStatus } from '@/contexts/ProjectContext';
 import { useToast } from '@/components/ui/use-toast';
 
 const TaskDialog = ({
@@ -216,7 +216,7 @@ const TaskDialog = ({
                   <p className="text-sm font-medium">Selected Resources:</p>
                   <div className="space-y-2">
                     {selectedResources.map(selectedResource => {
-                      const resource = resources.find(r => r.selectedResource?.resourceId === r.id);
+                      const resource = resources.find(r => r.id === selectedResource.resourceId);
                       return (
                         <div key={selectedResource.resourceId} className="flex items-center space-x-2 border p-2 rounded-md">
                           <span className="text-sm flex-1">
@@ -303,7 +303,7 @@ const ProjectDetail = () => {
     );
   }
   
-  const handleStatusChange = async (status: string) => {
+  const handleStatusChange = async (status: ProjectStatus) => {
     await updateProject(project.id, { status });
     setProject({ ...project, status });
     
