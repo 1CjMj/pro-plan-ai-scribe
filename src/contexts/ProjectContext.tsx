@@ -1,11 +1,13 @@
 /* eslint-disable no-useless-escape */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { v4 as uuidv4 } from 'uuid';
 import { useAuth } from './AuthContext';
 import { HfInference } from '@huggingface/inference';
 import { updateProjectStatus as updateProjectStatusUtil, deleteProject as deleteProjectUtil } from '@/lib/projectUtils';
+import AIStatusBar from '../components/ui/AIStatusBar';
+import { initializeAIModels } from '../utils/ai';
 
 // Define project-related types
 export type ProjectStatus = 'planning' | 'in-progress' | 'completed' | 'on-hold';
@@ -82,8 +84,6 @@ interface ProjectContextType {
   importResourcesFromFile: (data: any) => Promise<void>;
   saveEmployeesToFile: (employees: any[]) => void;
 }
-
-export const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 
 // Mock resources ndee teesting
 const initialResources: Resource[] = [
@@ -666,4 +666,5 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+const ProjectContext = React.createContext<ProjectContextType | undefined>(undefined);
 export { ProjectContext, updateProjectStatusUtil };
