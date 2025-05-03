@@ -1,22 +1,12 @@
-<<<<<<< HEAD
-/* eslint-disable no-useless-escape */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useContext, useEffect } from 'react';
+
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { v4 as uuidv4 } from 'uuid';
 import { useAuth } from './AuthContext';
 import { HfInference } from '@huggingface/inference';
 import { updateProjectStatus as updateProjectStatusUtil, deleteProject as deleteProjectUtil } from '@/lib/projectUtils';
-import AIStatusBar from '../components/ui/AIStatusBar';
-import { initializeAIModels } from '../utils/ai';
-=======
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import { useToast } from '@/components/ui/use-toast';
-import { v4 as uuidv4 } from 'uuid';
-import { useAuth } from './AuthContext';
-import { initializeAIModels, generateTasksFromText, calculateSkillMatch } from '@/utils/ai';
 import AIStatusBar from '@/components/ui/AIStatusBar';
->>>>>>> 7d5b1fbdda300f6b7f4c9695918cdd8cd85ab553
+import { initializeAIModels, generateTasksFromText, calculateSkillMatch } from '@/utils/ai';
 
 // Define project-related types
 export type ProjectStatus = 'planning' | 'in-progress' | 'completed' | 'on-hold';
@@ -92,13 +82,9 @@ interface ProjectContextType {
   importResourcesFromFile: (data: any) => Promise<void>;
 }
 
-<<<<<<< HEAD
-// Mock resources ndee teesting
-=======
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 
 // Mock resources
->>>>>>> 7d5b1fbdda300f6b7f4c9695918cdd8cd85ab553
 const initialResources: Resource[] = [
   { id: 'resource-001', name: 'MacBook Pro', type: 'hardware', availability: 70, quantity: 5, unit: 'unit' },
   { id: 'resource-002', name: 'Adobe Creative Suite', type: 'software', availability: 100, quantity: 10, unit: 'license' },
@@ -612,10 +598,6 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-<<<<<<< HEAD
-const ProjectContext = React.createContext<ProjectContextType | undefined>(undefined);
-export { ProjectContext, updateProjectStatusUtil };
-=======
 export function useProjects() {
   const context = useContext(ProjectContext);
   if (context === undefined) {
@@ -623,4 +605,5 @@ export function useProjects() {
   }
   return context;
 }
->>>>>>> 7d5b1fbdda300f6b7f4c9695918cdd8cd85ab553
+
+export { ProjectContext, updateProjectStatusUtil };
