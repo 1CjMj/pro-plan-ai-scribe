@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import React, { useState } from 'react';
-import { useProjects } from '@/contexts/ProjectContext';
+import { useProjects } from '@/contexts/useProjects';
 import { useAuth } from '@/contexts/AuthContext';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';

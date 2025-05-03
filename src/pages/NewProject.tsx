@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useProjects } from '@/contexts/ProjectContext';
+import { useProjects } from '@/contexts/useProjects';
 import { useAuth } from '@/contexts/AuthContext';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
@@ -115,9 +114,8 @@ const NewProject = () => {
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="technical">Technical</SelectItem>
-                      <SelectItem value="creative">Creative</SelectItem>
-                      <SelectItem value="general">General</SelectItem>
+                      <SelectItem value="coding">Coding</SelectItem>
+                      <SelectItem value="non-coding">Non-Coding</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import React from 'react';
-import { useProjects } from '@/contexts/ProjectContext';
+import { useProjects } from '@/contexts/useProjects';
 import Layout from '@/components/layout/Layout';
 import {
   Card,

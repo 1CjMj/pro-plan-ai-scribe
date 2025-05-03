@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useProjects } from '@/contexts/ProjectContext';
+import { useProjects } from '@/contexts/useProjects';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -26,12 +26,11 @@ import {
 } from 'lucide-react';
 import {
   DropdownMenu,
+  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  DropdownMenuSeparator
+} from '@/components/ui/dropdown-menu';
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -75,6 +74,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { TaskStatus, ProjectStatus } from '@/contexts/ProjectContext';
 import { useToast } from '@/components/ui/use-toast';
+import { updateProjectStatusUtil as updateProjectStatus } from '@/contexts/ProjectContext';
 
 const TaskDialog = ({
   open,
@@ -92,7 +92,7 @@ const TaskDialog = ({
   const [skills, setSkills] = useState('');
   const [estimatedHours, setEstimatedHours] = useState('');
   const { resources } = useProjects();
-  const [selectedResources, setSelectedResources] = useState<{resourceId: string, amount: number}[]>([]);
+  const [selectedResources, setSelectedResources] = useState<{ resourceId: string, amount: number }[]>([]);
 
   const handleAddResource = (resourceId: string) => {
     if (!selectedResources.find(r => r.resourceId === resourceId)) {
@@ -106,7 +106,7 @@ const TaskDialog = ({
 
   const handleResourceAmountChange = (resourceId: string, amount: number) => {
     setSelectedResources(
-      selectedResources.map(r => 
+      selectedResources.map(r =>
         r.resourceId === resourceId ? { ...r, amount } : r
       )
     );
@@ -114,9 +114,9 @@ const TaskDialog = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const skillsList = skills.split(',').map(skill => skill.trim()).filter(Boolean);
-    
+
     const newTask = {
       title,
       description,
@@ -126,10 +126,10 @@ const TaskDialog = ({
       resources: selectedResources,
       createdBy: 'manual' as const,
     };
-    
+
     onAddTask(newTask);
     onOpenChange(false);
-    
+
     // Reset form
     setTitle('');
     setDescription('');
@@ -147,7 +147,7 @@ const TaskDialog = ({
             Create a new task for this project
           </DialogDescription>
         </DialogHeader>
-        
+
         <form onSubmit={handleSubmit}>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
@@ -160,7 +160,7 @@ const TaskDialog = ({
                 required
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="description">Task Description</Label>
               <Textarea
@@ -171,7 +171,7 @@ const TaskDialog = ({
                 required
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="skills">Required Skills</Label>
               <Input
@@ -182,7 +182,7 @@ const TaskDialog = ({
                 required
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="estimatedHours">Estimated Hours</Label>
               <Input
@@ -196,7 +196,7 @@ const TaskDialog = ({
                 required
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label>Resources</Label>
               <Select onValueChange={handleAddResource}>
@@ -211,7 +211,7 @@ const TaskDialog = ({
                   ))}
                 </SelectContent>
               </Select>
-              
+
               {selectedResources.length > 0 && (
                 <div className="mt-2 space-y-2">
                   <p className="text-sm font-medium">Selected Resources:</p>
@@ -252,7 +252,7 @@ const TaskDialog = ({
               )}
             </div>
           </div>
-          
+
           <DialogFooter>
             <Button type="submit">Add Task</Button>
           </DialogFooter>
@@ -265,8 +265,8 @@ const TaskDialog = ({
 const ProjectDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { 
-    getProjectById, 
+  const {
+    getProjectById,
     updateProject,
     deleteProject,
     addTask,
@@ -274,14 +274,15 @@ const ProjectDetail = () => {
     assignTask,
     autoAssignTasks,
     generateTasksFromDescription,
-    loading 
+    loading,
+    projects
   } = useProjects();
   const [project, setProject] = useState<any>(null);
   const [isTaskDialogOpen, setIsTaskDialogOpen] = useState(false);
   const [isGeneratingTasks, setIsGeneratingTasks] = useState(false);
   const [isAutoAssigning, setIsAutoAssigning] = useState(false);
   const { toast } = useToast();
-  
+
   useEffect(() => {
     if (id) {
       const fetchedProject = getProjectById(id);
@@ -292,7 +293,7 @@ const ProjectDetail = () => {
       }
     }
   }, [id, getProjectById, loading, navigate]);
-  
+
   if (!project) {
     return (
       <Layout requiresAuth>
@@ -303,82 +304,77 @@ const ProjectDetail = () => {
       </Layout>
     );
   }
-  
-  const handleStatusChange = async (status: ProjectStatus) => {
-    await updateProject(project.id, { status });
-    setProject({ ...project, status });
-    
-    toast({
-      title: "Status updated",
-      description: `Project status changed to ${status}`,
-    });
+
+  const handleStatusChange = (newStatus: ProjectStatus) => {
+    if (project) {
+      const updatedProjects = updateProjectStatus(projects, project.id, newStatus);
+      updateProject(project.id, { status: newStatus }); // Save the updated project status
+      setProject({ ...project, status: newStatus }); // Update the local project state
+    }
   };
-  
-  const handleDeleteProject = async () => {
-    await deleteProject(project.id);
-    navigate('/projects');
-    
-    toast({
-      title: "Project deleted",
-      description: "The project has been deleted successfully",
-    });
+
+  const handleDeleteProject = () => {
+    if (project) {
+      deleteProject(project.id);
+      navigate('/projects'); // Redirect to projects list after deletion
+    }
   };
-  
+
   const handleAddTask = async (taskData: any) => {
     await addTask(project.id, taskData);
-    
+
     // Refresh project data
     const updatedProject = getProjectById(project.id);
     setProject(updatedProject);
-    
+
     toast({
       title: "Task added",
       description: "The task has been added to the project",
     });
   };
-  
+
   const handleTaskStatusChange = async (taskId: string, status: TaskStatus) => {
     await updateTaskStatus(taskId, project.id, status);
-    
+
     // Refresh project data
     const updatedProject = getProjectById(project.id);
     setProject(updatedProject);
-    
+
     toast({
       title: "Task status changed",
       description: `Task status updated to ${status.replace('-', ' ')}`,
     });
   };
-  
+
   const handleGenerateTasks = async () => {
     setIsGeneratingTasks(true);
     await generateTasksFromDescription(project.id);
-    
+
     // Refresh project data
     const updatedProject = getProjectById(project.id);
     setProject(updatedProject);
-    
+
     setIsGeneratingTasks(false);
   };
-  
+
   const handleAutoAssignTasks = async () => {
     setIsAutoAssigning(true);
     await autoAssignTasks(project.id);
-    
+
     // Refresh project data
     const updatedProject = getProjectById(project.id);
     setProject(updatedProject);
-    
+
     setIsAutoAssigning(false);
   };
-  
+
   // Calculate task statistics
   const totalTasks = project.tasks.length;
   const completedTasks = project.tasks.filter((task: any) => task.status === 'completed').length;
   const inProgressTasks = project.tasks.filter((task: any) => task.status === 'in-progress').length;
   const notStartedTasks = project.tasks.filter((task: any) => task.status === 'not-started').length;
   const completionPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-  
+
   // Determine status color
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -389,15 +385,15 @@ const ProjectDetail = () => {
       default: return 'bg-gray-100 text-gray-800';
     }
   };
-  
+
   // Get task status badge color
   const getTaskStatusBadge = (status: string) => {
     switch (status) {
-      case 'not-started': 
+      case 'not-started':
         return <Badge variant="outline" className="bg-gray-100">Not Started</Badge>;
-      case 'in-progress': 
+      case 'in-progress':
         return <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100">In Progress</Badge>;
-      case 'completed': 
+      case 'completed':
         return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Completed</Badge>;
       default:
         return <Badge variant="outline">Unknown</Badge>;
@@ -424,75 +420,44 @@ const ProjectDetail = () => {
               </p>
             </div>
           </div>
-          
-          <div className="flex items-center gap-2">
-            <Badge className={getStatusColor(project.status)}>
-              {project.status.replace('-', ' ')}
-            </Badge>
-            
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Project Actions</DropdownMenuLabel>
-                <DropdownMenuItem>
-                  <Edit className="mr-2 h-4 w-4" />
-                  <span>Edit Project</span>
-                </DropdownMenuItem>
-                
-                <DropdownMenuSeparator />
-                <DropdownMenuLabel>Change Status</DropdownMenuLabel>
-                <DropdownMenuItem onClick={() => handleStatusChange('planning')}>
-                  <Calendar className="mr-2 h-4 w-4" />
-                  <span>Planning</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleStatusChange('in-progress')}>
-                  <PlayCircle className="mr-2 h-4 w-4" />
-                  <span>In Progress</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleStatusChange('on-hold')}>
-                  <AlertTriangle className="mr-2 h-4 w-4" />
-                  <span>On Hold</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleStatusChange('completed')}>
-                  <CheckCircle2 className="mr-2 h-4 w-4" />
-                  <span>Completed</span>
-                </DropdownMenuItem>
-                
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild className="text-red-600 focus:text-red-600">
-                  <AlertDialogTrigger className="w-full">
-                    <div className="flex w-full items-center">
-                      <Trash2 className="mr-2 h-4 w-4" />
-                      <span>Delete Project</span>
-                    </div>
-                  </AlertDialogTrigger>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            
-            <AlertDialog>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This will permanently delete the project and all associated tasks. This action cannot be undone.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleDeleteProject} className="bg-red-600 hover:bg-red-700">
-                    Delete
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+
+          {/**change project status */}
+          <div className="flex items-center gap-4 justify-between">
+            <div className="flex items-center gap-4">
+              <Button
+                onClick={() => handleStatusChange('planning')}
+                variant={project.status === 'planning' ? 'default' : 'outline'}
+              >
+                Planning
+              </Button>
+              <Button
+                onClick={() => handleStatusChange('in-progress')}
+                variant={project.status === 'in-progress' ? 'default' : 'outline'}
+              >
+                In Progress
+              </Button>
+              <Button
+                onClick={() => handleStatusChange('completed')}
+                variant={project.status === 'completed' ? 'default' : 'outline'}
+              >
+                Completed
+              </Button>
+              <Button
+                onClick={() => handleStatusChange('on-hold')}
+                variant={project.status === 'on-hold' ? 'default' : 'outline'}
+              >
+                On Hold
+              </Button>
+            </div>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteProject}
+            >
+              Delete Project
+            </Button>
           </div>
         </div>
-        
+
         <div className="grid gap-6 md:grid-cols-3">
           <Card className="md:col-span-2">
             <CardHeader>
@@ -506,7 +471,7 @@ const ProjectDetail = () => {
                 <h3 className="text-sm font-medium text-muted-foreground mb-2">DESCRIPTION</h3>
                 <p className="text-sm">{project.description}</p>
               </div>
-              
+
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <h3 className="text-sm font-medium text-muted-foreground mb-1">Start Date</h3>
@@ -515,7 +480,7 @@ const ProjectDetail = () => {
                     {project.startDate}
                   </p>
                 </div>
-                
+
                 <div>
                   <h3 className="text-sm font-medium text-muted-foreground mb-1">End Date</h3>
                   <p className="flex items-center">
@@ -523,7 +488,7 @@ const ProjectDetail = () => {
                     {project.endDate || 'Not set'}
                   </p>
                 </div>
-                
+
                 <div>
                   <h3 className="text-sm font-medium text-muted-foreground mb-1">Last Updated</h3>
                   <p className="flex items-center">
@@ -531,7 +496,7 @@ const ProjectDetail = () => {
                     {new Date(project.updatedAt).toLocaleString()}
                   </p>
                 </div>
-                
+
                 <div>
                   <h3 className="text-sm font-medium text-muted-foreground mb-1">Tasks</h3>
                   <p className="flex items-center">
@@ -542,7 +507,7 @@ const ProjectDetail = () => {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader>
               <CardTitle>Progress</CardTitle>
@@ -555,9 +520,9 @@ const ProjectDetail = () => {
                 <div className="text-5xl font-bold mb-2">{completionPercentage}%</div>
                 <p className="text-sm text-muted-foreground">Completed</p>
               </div>
-              
+
               <Progress value={completionPercentage} className="h-2 mb-6" />
-              
+
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Completed:</span>
@@ -579,10 +544,10 @@ const ProjectDetail = () => {
             </CardContent>
           </Card>
         </div>
-        
+
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <h2 className="text-2xl font-bold tracking-tight">Tasks</h2>
-          
+
           <div className="flex flex-wrap gap-2">
             <Button
               variant="outline"
@@ -601,7 +566,7 @@ const ProjectDetail = () => {
                 </>
               )}
             </Button>
-            
+
             <Button
               variant="outline"
               onClick={handleGenerateTasks}
@@ -619,12 +584,12 @@ const ProjectDetail = () => {
                 </>
               )}
             </Button>
-            
+
             <Button onClick={() => setIsTaskDialogOpen(true)}>
               <Plus className="mr-2 h-4 w-4" />
               Add Task
             </Button>
-            
+
             <TaskDialog
               open={isTaskDialogOpen}
               onOpenChange={setIsTaskDialogOpen}
@@ -633,7 +598,7 @@ const ProjectDetail = () => {
             />
           </div>
         </div>
-        
+
         <Tabs defaultValue="all">
           <TabsList>
             <TabsTrigger value="all">All Tasks</TabsTrigger>
@@ -641,7 +606,7 @@ const ProjectDetail = () => {
             <TabsTrigger value="in-progress">In Progress</TabsTrigger>
             <TabsTrigger value="completed">Completed</TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="all" className="mt-4">
             <Card>
               <CardContent className="p-0">
@@ -719,13 +684,13 @@ const ProjectDetail = () => {
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                <div className="px-4 py-2 text-sm font-medium text-muted-foreground">Actions</div>
                                 <DropdownMenuItem>
                                   <Edit className="mr-2 h-4 w-4" />
                                   <span>Edit Task</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuLabel>Change Status</DropdownMenuLabel>
+                                <div className="px-4 py-2 text-sm font-medium text-muted-foreground">Change Status</div>
                                 <DropdownMenuItem onClick={() => handleTaskStatusChange(task.id, 'not-started')}>
                                   <XCircle className="mr-2 h-4 w-4" />
                                   <span>Not Started</span>
@@ -749,7 +714,7 @@ const ProjectDetail = () => {
               </CardContent>
             </Card>
           </TabsContent>
-          
+
           {/* Not Started Tab */}
           <TabsContent value="not-started" className="mt-4">
             <Card>
@@ -807,7 +772,7 @@ const ProjectDetail = () => {
                             </TableCell>
                             <TableCell>{task.estimatedHours}</TableCell>
                             <TableCell className="text-right">
-                              <Button 
+                              <Button
                                 variant="outline"
                                 size="sm"
                                 onClick={() => handleTaskStatusChange(task.id, 'in-progress')}
@@ -823,7 +788,7 @@ const ProjectDetail = () => {
               </CardContent>
             </Card>
           </TabsContent>
-          
+
           {/* In Progress Tab */}
           <TabsContent value="in-progress" className="mt-4">
             <Card>
@@ -881,7 +846,7 @@ const ProjectDetail = () => {
                             </TableCell>
                             <TableCell>{task.estimatedHours}</TableCell>
                             <TableCell className="text-right">
-                              <Button 
+                              <Button
                                 variant="outline"
                                 size="sm"
                                 onClick={() => handleTaskStatusChange(task.id, 'completed')}
@@ -897,7 +862,7 @@ const ProjectDetail = () => {
               </CardContent>
             </Card>
           </TabsContent>
-          
+
           {/* Completed Tab */}
           <TabsContent value="completed" className="mt-4">
             <Card>
@@ -955,7 +920,7 @@ const ProjectDetail = () => {
                             </TableCell>
                             <TableCell>{task.estimatedHours}</TableCell>
                             <TableCell className="text-right">
-                              <Button 
+                              <Button
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => handleTaskStatusChange(task.id, 'in-progress')}
@@ -972,7 +937,7 @@ const ProjectDetail = () => {
             </Card>
           </TabsContent>
         </Tabs>
-        
+
         <div className="flex justify-end gap-2 pt-4">
           <Button variant="outline">
             <Download className="mr-2 h-4 w-4" />

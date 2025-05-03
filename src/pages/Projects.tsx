@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useProjects } from '@/contexts/ProjectContext';
+import React, { useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useProjects } from '@/contexts/useProjects';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -25,6 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { ProjectContext } from '@/contexts/ProjectContext';
 
 const ProjectCard = ({ project }: { project: any }) => {
   // Calculate task completion percentage
@@ -141,6 +141,8 @@ const Projects = () => {
   const [viewType, setViewType] = useState<'grid' | 'list'>('grid');
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
+  const { deleteProject } = useContext(ProjectContext);
+  const navigate = useNavigate();
   
   // Filter projects based on search term and filters
   const filteredProjects = projects.filter(project => {
@@ -151,6 +153,10 @@ const Projects = () => {
     
     return matchesSearch && matchesStatus && matchesCategory;
   });
+
+  const handleDeleteProject = (projectId: string) => {
+    deleteProject(projectId);
+  };
 
   return (
     <Layout requiresAuth>
