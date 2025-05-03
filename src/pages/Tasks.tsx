@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { useProjects } from '@/contexts/useProjects';
+import { useProjects } from '@/contexts/ProjectContext';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import {
@@ -49,9 +50,9 @@ const Tasks = () => {
   // Apply filters
   const filteredTasks = allTasks.filter(task => {
     const matchesSearch = 
-      (task.title?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-      (task.description?.toLowerCase() || '').includes(searchTerm.toLowerCase());
-
+      task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      task.description.toLowerCase().includes(searchTerm.toLowerCase());
+    
     const matchesStatus = statusFilter ? task.status === statusFilter : true;
     const matchesProject = projectFilter ? task.projectId === projectFilter : true;
     

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
@@ -37,7 +38,59 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { useProjects } from '@/contexts/useProjects';
+import { useProjects } from '@/contexts/ProjectContext';
+
+// Mock employee data
+const employees = [
+  {
+    id: 'user-002',
+    name: 'Jane Worker',
+    email: 'jane.worker@example.com',
+    role: 'Frontend Developer',
+    skills: ['React', 'JavaScript', 'UI Design', 'Content Writing', 'Frontend Development'],
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jane',
+  },
+  {
+    id: 'user-003',
+    name: 'Bob Developer',
+    email: 'bob.developer@example.com',
+    role: 'Backend Developer',
+    skills: ['Backend Development', 'API Design', 'Database Design', 'SQL', 'DevOps'],
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Bob',
+  },
+  {
+    id: 'user-004',
+    name: 'Alice Designer',
+    email: 'alice.designer@example.com',
+    role: 'UI/UX Designer',
+    skills: ['UI/UX Design', 'Graphic Design', 'Visual Design', 'Art Direction', 'Brand Strategy'],
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alice',
+  },
+  {
+    id: 'user-005',
+    name: 'Charlie Manager',
+    email: 'charlie.manager@example.com',
+    role: 'Project Manager',
+    skills: ['Project Management', 'Communication', 'Risk Management', 'Strategic Planning', 'Presentation'],
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Charlie',
+  },
+  {
+    id: 'user-006',
+    name: 'David Writer',
+    email: 'david.writer@example.com',
+    role: 'Content Writer',
+    skills: ['Content Writing', 'Copywriting', 'SEO', 'Research', 'Editing'],
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David',
+  },
+  {
+    id: 'user-007',
+    name: 'Eva Analyst',
+    email: 'eva.analyst@example.com',
+    role: 'Data Analyst',
+    skills: ['Data Analysis', 'Statistics', 'SQL', 'Python', 'Data Visualization'],
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Eva',
+  },
+];
 
 const ImportEmployeesDialog = ({ 
   open, 
@@ -49,21 +102,9 @@ const ImportEmployeesDialog = ({
   const [jsonData, setJsonData] = useState('');
   const { importEmployeesFromFile } = useProjects();
   
-  const handleFileUpload = async (file: File) => {
-    try {
-      const text = await file.text();
-      const data = JSON.parse(text);
-      await importEmployeesFromFile(data);
-      onOpenChange(false);
-    } catch (error) {
-      console.error('Error parsing JSON file:', error);
-      alert('Invalid JSON file');
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    
     try {
       const data = JSON.parse(jsonData);
       await importEmployeesFromFile(data);
@@ -88,7 +129,7 @@ const ImportEmployeesDialog = ({
             <div>
               <Label htmlFor="json-file">Upload JSON File</Label>
               <div className="mt-2 flex items-center gap-4">
-                <Input id="json-file" type="file" accept=".json" className="flex-1" onChange={(e) => e.target.files && handleFileUpload(e.target.files[0])} />
+                <Input id="json-file" type="file" accept=".json" className="flex-1" />
                 <Button type="button" variant="outline">
                   <Upload className="mr-2 h-4 w-4" />
                   Upload
@@ -225,9 +266,8 @@ const Employees = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [importDialogOpen, setImportDialogOpen] = useState(false);
   const [newEmployeeDialogOpen, setNewEmployeeDialogOpen] = useState(false);
-  const { employees } = useProjects();
-
-  // Replace mock data with actual employees from context
+  
+  // Filter employees based on search term
   const filteredEmployees = employees.filter(employee =>
     employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     employee.email.toLowerCase().includes(searchTerm.toLowerCase()) ||

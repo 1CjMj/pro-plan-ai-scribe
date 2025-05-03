@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* eslint-disable no-useless-escape */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useContext, useEffect } from 'react';
@@ -8,10 +9,18 @@ import { HfInference } from '@huggingface/inference';
 import { updateProjectStatus as updateProjectStatusUtil, deleteProject as deleteProjectUtil } from '@/lib/projectUtils';
 import AIStatusBar from '../components/ui/AIStatusBar';
 import { initializeAIModels } from '../utils/ai';
+=======
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import { useToast } from '@/components/ui/use-toast';
+import { v4 as uuidv4 } from 'uuid';
+import { useAuth } from './AuthContext';
+import { initializeAIModels, generateTasksFromText, calculateSkillMatch } from '@/utils/ai';
+import AIStatusBar from '@/components/ui/AIStatusBar';
+>>>>>>> 7d5b1fbdda300f6b7f4c9695918cdd8cd85ab553
 
 // Define project-related types
 export type ProjectStatus = 'planning' | 'in-progress' | 'completed' | 'on-hold';
-export type ProjectCategory = 'technical' | 'general' | 'creative' | 'coding' | 'non-coding';
+export type ProjectCategory = 'technical' | 'general' | 'creative';
 export type TaskStatus = 'not-started' | 'in-progress' | 'completed';
 
 export interface Resource {
@@ -64,7 +73,6 @@ interface ProjectContextType {
   projects: Project[];
   loading: boolean;
   resources: Resource[];
-  employees: any[];
   addProject: (project: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | 'tasks'>) => Promise<Project>;
   updateProject: (projectId: string, updates: Partial<Project>) => Promise<void>;
   deleteProject: (projectId: string) => Promise<void>;
@@ -82,10 +90,15 @@ interface ProjectContextType {
   deleteResource: (resourceId: string) => Promise<void>;
   importEmployeesFromFile: (data: any) => Promise<void>;
   importResourcesFromFile: (data: any) => Promise<void>;
-  saveEmployeesToFile: (employees: any[]) => void;
 }
 
+<<<<<<< HEAD
 // Mock resources ndee teesting
+=======
+const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
+
+// Mock resources
+>>>>>>> 7d5b1fbdda300f6b7f4c9695918cdd8cd85ab553
 const initialResources: Resource[] = [
   { id: 'resource-001', name: 'MacBook Pro', type: 'hardware', availability: 70, quantity: 5, unit: 'unit' },
   { id: 'resource-002', name: 'Adobe Creative Suite', type: 'software', availability: 100, quantity: 10, unit: 'license' },
@@ -150,30 +163,9 @@ const initialProjects: Project[] = [
   }
 ];
 
-const EMPLOYEES_FILE_PATH = 'backend/employees.json';
-
-const loadEmployeesFromFile = () => {
-  try {
-    const data = localStorage.getItem('employees');
-    return data ? JSON.parse(data) : [];
-  } catch (error) {
-    console.error('Error loading employees from localStorage:', error);
-    return [];
-  }
-};
-
-const saveEmployeesToFile = (employees: any[]) => {
-  try {
-    localStorage.setItem('employees', JSON.stringify(employees));
-  } catch (error) {
-    console.error('Error saving employees to localStorage:', error);
-  }
-};
-
 export function ProjectProvider({ children }: { children: React.ReactNode }) {
   const [projects, setProjects] = useState<Project[]>([]);
   const [resources, setResources] = useState<Resource[]>([]);
-  const [employees, setEmployees] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [aiLoading, setAILoading] = useState(true);
   const [aiError, setAIError] = useState<string | null>(null);
@@ -270,11 +262,11 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
   };
 
   const deleteProject = async (projectId: string) => {
-    setProjects((prev) => deleteProjectUtil(prev, projectId));
-
+    setProjects((prev) => prev.filter((project) => project.id !== projectId));
+    
     toast({
-      title: 'Project deleted',
-      description: 'The project has been removed successfully.',
+      title: "Project deleted",
+      description: "The project has been deleted successfully.",
     });
   };
 
@@ -364,7 +356,6 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
 
   const generateTasksFromDescription = async (projectId: string) => {
     setLoading(true);
-
     const project = projects.find(p => p.id === projectId);
     
     if (!project) {
@@ -378,55 +369,21 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
-      const endpoint =
-        project.category === "coding"
-          ? "http://localhost:5000/generate-tasks"
-          : "http://localhost:5000/generate-tasks-non-coding";
-
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ description: project.description }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to generate tasks from backend");
-      }
-
-      const data = await response.json();
-      console.log("API Response:", data); // Log the raw response for debugging
-      if (!data.tasks) {
-        throw new Error("Response does not contain tasks");
-      }
-
-      const aiTasks = data.tasks.map((task: any) => ({
-        id: uuidv4(),
-        title: task.title,
-        description: task.description,
-        status: 'not-started' as TaskStatus,
-        skills: task.skills || [],
-        estimatedHours: task.estimatedHours || 0,
-        resources: [],
-        createdBy: 'ai' as const,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      }));
-
-      for (const task of aiTasks) {
+      const generatedTasks = await generateTasksFromText(project.description, project.category);
+      
+      // Add tasks to project
+      for (const task of generatedTasks) {
         await addTask(projectId, task);
       }
 
       toast({
         title: "Tasks generated",
-        description: `${aiTasks.length} tasks have been generated using the backend.`,
+        description: `${generatedTasks.length} tasks have been generated using AI.`,
       });
     } catch (error) {
-      console.error("Error generating tasks:", error);
       toast({
-        title: "Error",
-        description: "Failed to generate tasks using the backend.",
+        title: "Error generating tasks",
+        description: error instanceof Error ? error.message : "Failed to generate tasks",
         variant: "destructive",
       });
     } finally {
@@ -436,7 +393,6 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
 
   const autoAssignTasks = async (projectId: string) => {
     setLoading(true);
-
     const project = projects.find(p => p.id === projectId);
     
     if (!project) {
@@ -450,56 +406,77 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
-      const updatedTasks = await Promise.all(
-        project.tasks.map(async task => {
-          if (task.assignedTo) {
-            return task;
-          }
+      const employees = [
+        {
+          id: 'user-002',
+          name: 'Jane Worker',
+          skills: ['React', 'JavaScript', 'UI Design', 'Content Writing', 'Frontend Development'],
+        },
+        {
+          id: 'user-003',
+          name: 'Bob Developer',
+          skills: ['Backend Development', 'API Design', 'Database Design', 'SQL', 'DevOps'],
+        },
+        {
+          id: 'user-004',
+          name: 'Alice Designer',
+          skills: ['UI/UX Design', 'Graphic Design', 'Visual Design', 'Art Direction', 'Brand Strategy'],
+        },
+        {
+          id: 'user-005',
+          name: 'Charlie Manager',
+          skills: ['Project Management', 'Communication', 'Risk Management', 'Strategic Planning', 'Presentation'],
+        },
+      ];
 
-          let bestMatch = null;
-          let bestMatchScore = 0;
+      const updatedProjects = await Promise.all(projects.map(async (p) => {
+        if (p.id === projectId) {
+          const updatedTasks = await Promise.all(p.tasks.map(async (task) => {
+            if (task.assignedTo) return task;
 
-          for (const employee of employees) {
-            const matchScore = task.skills.reduce((score, skill) => {
-              return employee.skills.includes(skill) ? score + 1 : score;
-            }, 0);
+            let bestMatch = null;
+            let bestMatchScore = 0;
 
-            if (matchScore > bestMatchScore) {
-              bestMatch = employee;
-              bestMatchScore = matchScore;
+            for (const employee of employees) {
+              const matchScore = await calculateSkillMatch(task.skills, employee.skills);
+              
+              if (matchScore > bestMatchScore) {
+                bestMatch = employee;
+                bestMatchScore = matchScore;
+              }
             }
-          }
 
-          if (bestMatch) {
-            return {
-              ...task,
-              assignedTo: bestMatch.id,
-              assignedToName: bestMatch.name,
-              updatedAt: new Date().toISOString(),
-            };
-          }
+            if (bestMatch && bestMatchScore >= 0.5) {
+              return {
+                ...task,
+                assignedTo: bestMatch.id,
+                assignedToName: bestMatch.name,
+                updatedAt: new Date().toISOString(),
+              };
+            }
 
-          return task;
-        })
-      );
+            return task;
+          }));
 
-      setProjects(prev =>
-        prev.map(p =>
-          p.id === projectId
-            ? { ...p, tasks: updatedTasks, updatedAt: new Date().toISOString() }
-            : p
-        )
-      );
+          return {
+            ...p,
+            tasks: updatedTasks,
+            updatedAt: new Date().toISOString(),
+          };
+        }
+        return p;
+      }));
 
+      setProjects(updatedProjects);
+      
       toast({
         title: "Tasks assigned",
-        description: "Tasks have been automatically assigned based on skills matching.",
+        description: "Tasks have been automatically assigned based on AI skill matching.",
       });
     } catch (error) {
-      console.error("Error assigning tasks:", error);
       toast({
-        title: "Error",
-        description: "Failed to assign tasks using AI.",
+        title: "Error assigning tasks",
+        description: error instanceof Error ? error.message : "Failed to assign tasks",
         variant: "destructive",
       });
     } finally {
@@ -534,7 +511,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     
     toast({
       title: "Resource added",
-      description: `Resource \"${newResource.name}\" has been added.`,
+      description: `Resource "${newResource.name}" has been added.`,
     });
     
     return newResource;
@@ -587,36 +564,13 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
   };
   
   const importEmployeesFromFile = async (data: any) => {
-    try {
-      const newEmployees = data.map((employee: any) => ({
-        id: uuidv4(),
-        name: employee.name,
-        email: employee.email,
-        role: employee.role,
-        skills: employee.skills,
-        tasks: [], // Initialize with no tasks
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      }));
-
-      setEmployees((prev) => {
-        const updatedEmployees = [...prev, ...newEmployees];
-        saveEmployeesToFile(updatedEmployees);
-        return updatedEmployees;
-      });
-
-      toast({
-        title: 'Employees imported',
-        description: `${newEmployees.length} employees have been added to the system.`,
-      });
-    } catch (error) {
-      console.error('Error importing employees:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to import employees.',
-        variant: 'destructive',
-      });
-    }
+    // Mock implementation - would validate and process file data
+    toast({
+      title: "Employees imported",
+      description: "Employee data has been imported successfully.",
+    });
+    
+    return Promise.resolve();
   };
   
   const importResourcesFromFile = async (data: any) => {
@@ -629,42 +583,44 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     return Promise.resolve();
   };
 
-  useEffect(() => {
-    setEmployees(loadEmployeesFromFile());
-  }, []);
-
   return (
-    <ProjectContext.Provider
-      value={{
-        projects,
-        loading,
-        resources,
-        employees,
-        addProject,
-        updateProject,
-        deleteProject,
-        getProjectById,
-        addTask,
-        updateTask,
-        deleteTask,
-        updateTaskStatus,
-        assignTask,
-        autoAssignTasks,
-        generateTasksFromDescription,
-        getTasksByUserId,
-        addResource,
-        updateResource,
-        deleteResource,
-        importEmployeesFromFile,
-        importResourcesFromFile,
-        saveEmployeesToFile,
-      }}
-    >
+    <ProjectContext.Provider value={{
+      projects,
+      loading,
+      resources,
+      addProject,
+      updateProject,
+      deleteProject,
+      getProjectById,
+      addTask,
+      updateTask,
+      deleteTask,
+      updateTaskStatus,
+      assignTask,
+      autoAssignTasks,
+      generateTasksFromDescription,
+      getTasksByUserId,
+      addResource,
+      updateResource,
+      deleteResource,
+      importEmployeesFromFile,
+      importResourcesFromFile,
+    }}>
       {children}
       <AIStatusBar loading={aiLoading} error={aiError} />
     </ProjectContext.Provider>
   );
 }
 
+<<<<<<< HEAD
 const ProjectContext = React.createContext<ProjectContextType | undefined>(undefined);
 export { ProjectContext, updateProjectStatusUtil };
+=======
+export function useProjects() {
+  const context = useContext(ProjectContext);
+  if (context === undefined) {
+    throw new Error('useProjects must be used within a ProjectProvider');
+  }
+  return context;
+}
+>>>>>>> 7d5b1fbdda300f6b7f4c9695918cdd8cd85ab553
