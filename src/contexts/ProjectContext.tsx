@@ -1,8 +1,9 @@
-
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { v4 as uuidv4 } from 'uuid';
 import { useAuth } from './AuthContext';
+import { initializeAIModels, generateTasksFromText, calculateSkillMatch } from '@/utils/ai';
+import AIStatusBar from '@/components/ui/AIStatusBar';
 
 // Define project-related types
 export type ProjectStatus = 'planning' | 'in-progress' | 'completed' | 'on-hold';
@@ -149,8 +150,29 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
   const [projects, setProjects] = useState<Project[]>([]);
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
+  const [aiLoading, setAILoading] = useState(true);
+  const [aiError, setAIError] = useState<string | null>(null);
   const { toast } = useToast();
   const { currentUser } = useAuth();
+
+  // Initialize AI models
+  useEffect(() => {
+    const loadAI = async () => {
+      try {
+        setAILoading(true);
+        const success = await initializeAIModels();
+        if (!success) {
+          setAIError('Failed to initialize AI models');
+        }
+      } catch (error) {
+        setAIError(error instanceof Error ? error.message : 'Unknown error initializing AI');
+      } finally {
+        setAILoading(false);
+      }
+    };
+
+    loadAI();
+  }, []);
 
   // Load saved data on mount
   useEffect(() => {
@@ -315,11 +337,10 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     await updateTask(taskId, projectId, { assignedTo: userId, assignedToName: userName });
   };
 
-  // Mock AI task generation
   const generateTasksFromDescription = async (projectId: string) => {
     setLoading(true);
-    
     const project = projects.find(p => p.id === projectId);
+    
     if (!project) {
       toast({
         title: "Error",
@@ -329,230 +350,34 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
       return;
     }
-    
-    // Simulate AI processing time
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Mock AI-generated tasks based on project category
-    let aiTasks: Omit<Task, 'id' | 'projectId' | 'createdAt' | 'updatedAt'>[] = [];
-    
-    if (project.category === 'technical') {
-      aiTasks = [
-        {
-          title: 'Requirements gathering',
-          description: 'Interview stakeholders and document technical requirements',
-          status: 'not-started',
-          skills: ['Project Management', 'Technical Analysis'],
-          estimatedHours: 20,
-          resources: [{ resourceId: 'resource-003', amount: 2 }],
-          createdBy: 'ai',
-        },
-        {
-          title: 'System architecture design',
-          description: 'Create high-level system architecture diagrams and documentation',
-          status: 'not-started',
-          skills: ['System Design', 'Architecture'],
-          estimatedHours: 30,
-          resources: [{ resourceId: 'resource-001', amount: 1 }, { resourceId: 'resource-004', amount: 0.5 }],
-          createdBy: 'ai',
-        },
-        {
-          title: 'Database schema design',
-          description: 'Design database schema based on requirements',
-          status: 'not-started',
-          skills: ['Database Design', 'SQL'],
-          estimatedHours: 20,
-          resources: [{ resourceId: 'resource-001', amount: 1 }],
-          createdBy: 'ai',
-        },
-        {
-          title: 'Backend development',
-          description: 'Implement backend APIs and services',
-          status: 'not-started',
-          skills: ['Backend Development', 'API Design'],
-          estimatedHours: 80,
-          resources: [{ resourceId: 'resource-001', amount: 1 }, { resourceId: 'resource-004', amount: 1 }],
-          createdBy: 'ai',
-        },
-        {
-          title: 'Frontend development',
-          description: 'Build user interface components and screens',
-          status: 'not-started',
-          skills: ['Frontend Development', 'UI Design'],
-          estimatedHours: 70,
-          resources: [{ resourceId: 'resource-001', amount: 1 }, { resourceId: 'resource-002', amount: 1 }],
-          createdBy: 'ai',
-        },
-        {
-          title: 'Integration testing',
-          description: 'Perform integration testing of all system components',
-          status: 'not-started',
-          skills: ['QA', 'Testing'],
-          estimatedHours: 40,
-          resources: [{ resourceId: 'resource-001', amount: 1 }],
-          createdBy: 'ai',
-        },
-        {
-          title: 'Deployment setup',
-          description: 'Configure deployment environments and CI/CD pipeline',
-          status: 'not-started',
-          skills: ['DevOps', 'Cloud Infrastructure'],
-          estimatedHours: 25,
-          resources: [{ resourceId: 'resource-004', amount: 1 }],
-          createdBy: 'ai',
-        },
-      ];
-    } else if (project.category === 'creative') {
-      aiTasks = [
-        {
-          title: 'Brand guidelines review',
-          description: 'Review existing brand guidelines and identify areas for improvement',
-          status: 'not-started',
-          skills: ['Brand Strategy', 'Design'],
-          estimatedHours: 10,
-          resources: [{ resourceId: 'resource-003', amount: 1 }],
-          createdBy: 'ai',
-        },
-        {
-          title: 'Mood board creation',
-          description: 'Create mood boards for visual direction',
-          status: 'not-started',
-          skills: ['Visual Design', 'Art Direction'],
-          estimatedHours: 15,
-          resources: [{ resourceId: 'resource-001', amount: 1 }, { resourceId: 'resource-002', amount: 1 }],
-          createdBy: 'ai',
-        },
-        {
-          title: 'Concept development',
-          description: 'Develop initial creative concepts based on brief',
-          status: 'not-started',
-          skills: ['Creative Ideation', 'Concept Development'],
-          estimatedHours: 25,
-          resources: [{ resourceId: 'resource-002', amount: 1 }],
-          createdBy: 'ai',
-        },
-        {
-          title: 'Design mockups',
-          description: 'Create high-fidelity design mockups for key deliverables',
-          status: 'not-started',
-          skills: ['Graphic Design', 'UI/UX Design'],
-          estimatedHours: 40,
-          resources: [{ resourceId: 'resource-001', amount: 1 }, { resourceId: 'resource-002', amount: 1 }],
-          createdBy: 'ai',
-        },
-        {
-          title: 'Copywriting',
-          description: 'Develop written content and messaging',
-          status: 'not-started',
-          skills: ['Copywriting', 'Content Strategy'],
-          estimatedHours: 30,
-          resources: [{ resourceId: 'resource-001', amount: 1 }],
-          createdBy: 'ai',
-        },
-        {
-          title: 'Client presentation',
-          description: 'Prepare and deliver client presentation of creative work',
-          status: 'not-started',
-          skills: ['Presentation', 'Client Management'],
-          estimatedHours: 15,
-          resources: [{ resourceId: 'resource-002', amount: 1 }, { resourceId: 'resource-003', amount: 1 }],
-          createdBy: 'ai',
-        },
-        {
-          title: 'Revisions and finalization',
-          description: 'Incorporate feedback and finalize creative assets',
-          status: 'not-started',
-          skills: ['Design', 'Attention to Detail'],
-          estimatedHours: 25,
-          resources: [{ resourceId: 'resource-001', amount: 1 }, { resourceId: 'resource-002', amount: 1 }],
-          createdBy: 'ai',
-        },
-      ];
-    } else { // general
-      aiTasks = [
-        {
-          title: 'Project kickoff',
-          description: 'Conduct kickoff meeting with all stakeholders',
-          status: 'not-started',
-          skills: ['Project Management', 'Communication'],
-          estimatedHours: 4,
-          resources: [{ resourceId: 'resource-003', amount: 1 }],
-          createdBy: 'ai',
-        },
-        {
-          title: 'Stakeholder interviews',
-          description: 'Interview key stakeholders to gather requirements and expectations',
-          status: 'not-started',
-          skills: ['Research', 'Communication'],
-          estimatedHours: 20,
-          resources: [{ resourceId: 'resource-003', amount: 2 }],
-          createdBy: 'ai',
-        },
-        {
-          title: 'Market research',
-          description: 'Conduct market research and competitive analysis',
-          status: 'not-started',
-          skills: ['Market Research', 'Analysis'],
-          estimatedHours: 30,
-          resources: [{ resourceId: 'resource-001', amount: 1 }],
-          createdBy: 'ai',
-        },
-        {
-          title: 'Project plan development',
-          description: 'Create detailed project plan with timeline and milestones',
-          status: 'not-started',
-          skills: ['Project Planning', 'Project Management'],
-          estimatedHours: 15,
-          resources: [{ resourceId: 'resource-001', amount: 1 }],
-          createdBy: 'ai',
-        },
-        {
-          title: 'Progress reporting',
-          description: 'Create regular progress reports for stakeholders',
-          status: 'not-started',
-          skills: ['Reporting', 'Communication'],
-          estimatedHours: 10,
-          resources: [{ resourceId: 'resource-001', amount: 0.5 }],
-          createdBy: 'ai',
-        },
-        {
-          title: 'Risk assessment',
-          description: 'Identify and document potential risks and mitigation strategies',
-          status: 'not-started',
-          skills: ['Risk Management', 'Strategic Planning'],
-          estimatedHours: 8,
-          resources: [{ resourceId: 'resource-003', amount: 1 }],
-          createdBy: 'ai',
-        },
-        {
-          title: 'Final deliverable preparation',
-          description: 'Compile and prepare final project deliverables',
-          status: 'not-started',
-          skills: ['Organization', 'Attention to Detail'],
-          estimatedHours: 20,
-          resources: [{ resourceId: 'resource-001', amount: 1 }],
-          createdBy: 'ai',
-        },
-      ];
+
+    try {
+      const generatedTasks = await generateTasksFromText(project.description, project.category);
+      
+      // Add tasks to project
+      for (const task of generatedTasks) {
+        await addTask(projectId, task);
+      }
+
+      toast({
+        title: "Tasks generated",
+        description: `${generatedTasks.length} tasks have been generated using AI.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error generating tasks",
+        description: error instanceof Error ? error.message : "Failed to generate tasks",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
-    
-    // Add tasks to project
-    for (const task of aiTasks) {
-      await addTask(projectId, task);
-    }
-    
-    setLoading(false);
-    
-    toast({
-      title: "Tasks generated",
-      description: `${aiTasks.length} tasks have been generated using AI.`,
-    });
   };
 
   const autoAssignTasks = async (projectId: string) => {
     setLoading(true);
-    
     const project = projects.find(p => p.id === projectId);
+    
     if (!project) {
       toast({
         title: "Error",
@@ -562,106 +387,86 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
       return;
     }
-    
-    // Simulate AI processing time
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Mock employee skills data
-    const employees = [
-      {
-        id: 'user-002',
-        name: 'Jane Worker',
-        skills: ['React', 'JavaScript', 'UI Design', 'Content Writing', 'Frontend Development'],
-      },
-      {
-        id: 'user-003',
-        name: 'Bob Developer',
-        skills: ['Backend Development', 'API Design', 'Database Design', 'SQL', 'DevOps'],
-      },
-      {
-        id: 'user-004',
-        name: 'Alice Designer',
-        skills: ['UI/UX Design', 'Graphic Design', 'Visual Design', 'Art Direction', 'Brand Strategy'],
-      },
-      {
-        id: 'user-005',
-        name: 'Charlie Manager',
-        skills: ['Project Management', 'Communication', 'Risk Management', 'Strategic Planning', 'Presentation'],
-      },
-    ];
-    
-    // Update tasks with assigned users based on skills match
-    const updatedProjects = projects.map(p => {
-      if (p.id === projectId) {
-        const updatedTasks = p.tasks.map(task => {
-          // Skip already assigned tasks
-          if (task.assignedTo) {
-            return task;
-          }
-          
-          // Find best match employee based on skills
-          let bestMatch = null;
-          let bestMatchScore = 0;
-          
-          for (const employee of employees) {
-            let matchScore = 0;
-            
-            // Count matching skills
-            for (const skill of task.skills) {
-              if (employee.skills.includes(skill)) {
-                matchScore += 1;
-              } else {
-                // Fuzzy matching - partial credit for similar skills
-                for (const empSkill of employee.skills) {
-                  if (empSkill.toLowerCase().includes(skill.toLowerCase()) || 
-                      skill.toLowerCase().includes(empSkill.toLowerCase())) {
-                    matchScore += 0.5;
-                  }
-                }
+
+    try {
+      const employees = [
+        {
+          id: 'user-002',
+          name: 'Jane Worker',
+          skills: ['React', 'JavaScript', 'UI Design', 'Content Writing', 'Frontend Development'],
+        },
+        {
+          id: 'user-003',
+          name: 'Bob Developer',
+          skills: ['Backend Development', 'API Design', 'Database Design', 'SQL', 'DevOps'],
+        },
+        {
+          id: 'user-004',
+          name: 'Alice Designer',
+          skills: ['UI/UX Design', 'Graphic Design', 'Visual Design', 'Art Direction', 'Brand Strategy'],
+        },
+        {
+          id: 'user-005',
+          name: 'Charlie Manager',
+          skills: ['Project Management', 'Communication', 'Risk Management', 'Strategic Planning', 'Presentation'],
+        },
+      ];
+
+      const updatedProjects = await Promise.all(projects.map(async (p) => {
+        if (p.id === projectId) {
+          const updatedTasks = await Promise.all(p.tasks.map(async (task) => {
+            if (task.assignedTo) return task;
+
+            let bestMatch = null;
+            let bestMatchScore = 0;
+
+            for (const employee of employees) {
+              const matchScore = await calculateSkillMatch(task.skills, employee.skills);
+              
+              if (matchScore > bestMatchScore) {
+                bestMatch = employee;
+                bestMatchScore = matchScore;
               }
             }
-            
-            // Normalize score as percentage of required skills
-            const normalizedScore = task.skills.length > 0 ? matchScore / task.skills.length : 0;
-            
-            // Update best match if this employee has a better score
-            if (normalizedScore > bestMatchScore) {
-              bestMatch = employee;
-              bestMatchScore = normalizedScore;
+
+            if (bestMatch && bestMatchScore >= 0.5) {
+              return {
+                ...task,
+                assignedTo: bestMatch.id,
+                assignedToName: bestMatch.name,
+                updatedAt: new Date().toISOString(),
+              };
             }
-          }
-          
-          // Only assign if match score is above threshold (50%)
-          if (bestMatch && bestMatchScore >= 0.5) {
-            return {
-              ...task,
-              assignedTo: bestMatch.id,
-              assignedToName: bestMatch.name,
-              updatedAt: new Date().toISOString(),
-            };
-          }
-          
-          return task;
-        });
-        
-        return {
-          ...p,
-          tasks: updatedTasks,
-          updatedAt: new Date().toISOString(),
-        };
-      }
-      return p;
-    });
-    
-    setProjects(updatedProjects);
-    setLoading(false);
-    
-    toast({
-      title: "Tasks assigned",
-      description: "Tasks have been automatically assigned based on skills matching.",
-    });
+
+            return task;
+          }));
+
+          return {
+            ...p,
+            tasks: updatedTasks,
+            updatedAt: new Date().toISOString(),
+          };
+        }
+        return p;
+      }));
+
+      setProjects(updatedProjects);
+      
+      toast({
+        title: "Tasks assigned",
+        description: "Tasks have been automatically assigned based on AI skill matching.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error assigning tasks",
+        description: error instanceof Error ? error.message : "Failed to assign tasks",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
-  
+
   const getTasksByUserId = (userId: string): Task[] => {
     const userTasks: Task[] = [];
     
@@ -762,31 +567,30 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <ProjectContext.Provider
-      value={{
-        projects,
-        loading,
-        resources,
-        addProject,
-        updateProject,
-        deleteProject,
-        getProjectById,
-        addTask,
-        updateTask,
-        deleteTask,
-        updateTaskStatus,
-        assignTask,
-        autoAssignTasks,
-        generateTasksFromDescription,
-        getTasksByUserId,
-        addResource,
-        updateResource,
-        deleteResource,
-        importEmployeesFromFile,
-        importResourcesFromFile,
-      }}
-    >
+    <ProjectContext.Provider value={{
+      projects,
+      loading,
+      resources,
+      addProject,
+      updateProject,
+      deleteProject,
+      getProjectById,
+      addTask,
+      updateTask,
+      deleteTask,
+      updateTaskStatus,
+      assignTask,
+      autoAssignTasks,
+      generateTasksFromDescription,
+      getTasksByUserId,
+      addResource,
+      updateResource,
+      deleteResource,
+      importEmployeesFromFile,
+      importResourcesFromFile,
+    }}>
       {children}
+      <AIStatusBar loading={aiLoading} error={aiError} />
     </ProjectContext.Provider>
   );
 }
