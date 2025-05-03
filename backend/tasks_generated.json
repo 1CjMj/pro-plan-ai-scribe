@@ -1,0 +1,695 @@
+[
+  {
+    "title": "Define Project Scope and Objectives",
+    "description": "Define Project Scope and Objectives",
+    "status": "not-started",
+    "skills": [
+      "Project Management",
+      "Strategic Planning",
+      "Needs Assessment",
+      "Communication"
+    ],
+    "estimatedHours": 40,
+    "resources": [
+      "Stakeholder input (students",
+      "faculty",
+      "staff",
+      "counseling services)",
+      "Existing mental health data",
+      "University mission statement"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Secure Funding and Resources",
+    "description": "Secure Funding and Resources",
+    "status": "not-started",
+    "skills": [
+      "Grant Writing",
+      "Fundraising",
+      "Budgeting",
+      "Negotiation"
+    ],
+    "estimatedHours": 120,
+    "resources": [
+      "Grant database",
+      "Budgeting software",
+      "University financial guidelines",
+      "Grant writing templates"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Establish a Project Team",
+    "description": "Establish a Project Team",
+    "status": "not-started",
+    "skills": [
+      "Leadership",
+      "Team Building",
+      "Communication",
+      "Recruitment"
+    ],
+    "estimatedHours": 24,
+    "resources": [
+      "Volunteer application forms",
+      "Org chart template",
+      "University HR policies"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Develop a Project Timeline and Budget",
+    "description": "Develop a Project Timeline and Budget",
+    "status": "not-started",
+    "skills": [
+      "Project Management",
+      "Budgeting",
+      "Financial Analysis",
+      "Time Management"
+    ],
+    "estimatedHours": 56,
+    "resources": [
+      "Project management software (e.g.",
+      "Asana",
+      "Trello",
+      "MS Project)",
+      "Budgeting templates",
+      "Historical data on similar projects"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Conduct a Needs Assessment Survey",
+    "description": "Conduct a Needs Assessment Survey",
+    "status": "not-started",
+    "skills": [
+      "Survey Design",
+      "Data Analysis",
+      "Statistical Analysis",
+      "Communication"
+    ],
+    "estimatedHours": 80,
+    "resources": [
+      "Survey platform (e.g.",
+      "SurveyMonkey",
+      "Qualtrics)",
+      "Student/Faculty/Staff email lists",
+      "Institutional Review Board (IRB) approval"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Review Existing Campus Mental Health Resources",
+    "description": "Review Existing Campus Mental Health Resources",
+    "status": "not-started",
+    "skills": [
+      "Research",
+      "Data Analysis",
+      "Report Writing",
+      "Critical Thinking"
+    ],
+    "estimatedHours": 40,
+    "resources": [
+      "University website",
+      "Counseling services reports",
+      "Student handbooks"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Obtain Necessary Approvals",
+    "description": "Obtain Necessary Approvals",
+    "status": "not-started",
+    "skills": [
+      "Communication",
+      "Negotiation",
+      "Policy Interpretation",
+      "Relationship Building"
+    ],
+    "estimatedHours": 56,
+    "resources": [
+      "University policies and procedures",
+      "Approval request templates"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Identify Workshop Topics",
+    "description": "Identify Workshop Topics",
+    "status": "not-started",
+    "skills": [
+      "Needs Assessment",
+      "Research",
+      "Content Development",
+      "Communication"
+    ],
+    "estimatedHours": 24,
+    "resources": [
+      "Needs assessment results",
+      "Expert input (counselors",
+      "psychologists)",
+      "Relevant academic literature"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Develop Workshop Content and Materials",
+    "description": "Develop Workshop Content and Materials",
+    "status": "not-started",
+    "skills": [
+      "Content Creation",
+      "Presentation Skills",
+      "Instructional Design",
+      "Writing"
+    ],
+    "estimatedHours": 0,
+    "resources": [
+      "Presentation software (e.g.",
+      "PowerPoint",
+      "Google Slides)",
+      "Graphic design software (e.g.",
+      "Canva)",
+      "Relevant articles and books"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Recruit Workshop Facilitators",
+    "description": "Recruit Workshop Facilitators",
+    "status": "not-started",
+    "skills": [
+      "Recruitment",
+      "Interviewing",
+      "Communication",
+      "Networking"
+    ],
+    "estimatedHours": 40,
+    "resources": [
+      "University faculty/staff directory",
+      "Student organization contacts",
+      "Job posting sites"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Train Workshop Facilitators",
+    "description": "Train Workshop Facilitators",
+    "status": "not-started",
+    "skills": [
+      "Training Delivery",
+      "Group Facilitation",
+      "Communication",
+      "Mentoring"
+    ],
+    "estimatedHours": 24,
+    "resources": [
+      "Training materials",
+      "Workshop agenda",
+      "Expert trainers (counselors",
+      "psychologists)"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Schedule and Promote Workshops",
+    "description": "Schedule and Promote Workshops",
+    "status": "not-started",
+    "skills": [
+      "Marketing",
+      "Communication",
+      "Event Planning",
+      "Social Media Management"
+    ],
+    "estimatedHours": 56,
+    "resources": [
+      "Campus calendar",
+      "Email marketing platform (e.g.",
+      "Mailchimp)",
+      "Social media accounts",
+      "Flyer templates"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Deliver Workshops",
+    "description": "Deliver Workshops",
+    "status": "not-started",
+    "skills": [
+      "Presentation Skills",
+      "Group Facilitation",
+      "Communication",
+      "Active Listening"
+    ],
+    "estimatedHours": 0,
+    "resources": [
+      "Workshop materials",
+      "Presentation equipment (projector",
+      "screen",
+      "microphone)",
+      "Room setup"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Collect Workshop Feedback",
+    "description": "Collect Workshop Feedback",
+    "status": "not-started",
+    "skills": [
+      "Survey Design",
+      "Data Collection",
+      "Data Analysis",
+      "Communication"
+    ],
+    "estimatedHours": 0,
+    "resources": [
+      "Survey forms (paper or online)",
+      "Feedback boxes",
+      "Data analysis software (e.g.",
+      "Excel)"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Revise and Improve Workshop Content",
+    "description": "Revise and Improve Workshop Content",
+    "status": "not-started",
+    "skills": [
+      "Content Creation",
+      "Editing",
+      "Data Analysis",
+      "Communication"
+    ],
+    "estimatedHours": 0,
+    "resources": [
+      "Workshop feedback data",
+      "Expert input (counselors",
+      "psychologists)",
+      "Updated resources"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Develop Peer Support Group Guidelines",
+    "description": "Develop Peer Support Group Guidelines",
+    "status": "not-started",
+    "skills": [
+      "Group Dynamics",
+      "Policy Development",
+      "Communication",
+      "Ethical Considerations"
+    ],
+    "estimatedHours": 40,
+    "resources": [
+      "Existing peer support group guidelines",
+      "Expert input (counselors",
+      "psychologists)",
+      "Legal consultation"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Recruit and Train Peer Facilitators",
+    "description": "Recruit and Train Peer Facilitators",
+    "status": "not-started",
+    "skills": [
+      "Recruitment",
+      "Training Delivery",
+      "Group Facilitation",
+      "Mentoring"
+    ],
+    "estimatedHours": 56,
+    "resources": [
+      "Student leader applications",
+      "Training materials",
+      "Expert trainers (counselors",
+      "psychologists)"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Establish Peer Support Group Schedule and Location",
+    "description": "Establish Peer Support Group Schedule and Location",
+    "status": "not-started",
+    "skills": [
+      "Scheduling",
+      "Logistics",
+      "Communication",
+      "Student Relations"
+    ],
+    "estimatedHours": 24,
+    "resources": [
+      "Campus calendar",
+      "Room reservation system",
+      "Student feedback"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Promote Peer Support Groups",
+    "description": "Promote Peer Support Groups",
+    "status": "not-started",
+    "skills": [
+      "Marketing",
+      "Communication",
+      "Event Planning",
+      "Social Media Management"
+    ],
+    "estimatedHours": 40,
+    "resources": [
+      "Campus calendar",
+      "Email marketing platform (e.g.",
+      "Mailchimp)",
+      "Social media accounts",
+      "Flyer templates"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Facilitate Peer Support Group Sessions",
+    "description": "Facilitate Peer Support Group Sessions",
+    "status": "not-started",
+    "skills": [
+      "Group Facilitation",
+      "Active Listening",
+      "Empathy",
+      "Communication"
+    ],
+    "estimatedHours": 0,
+    "resources": [
+      "Group guidelines",
+      "Facilitation materials",
+      "Room setup"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Provide Ongoing Support to Peer Facilitators",
+    "description": "Provide Ongoing Support to Peer Facilitators",
+    "status": "not-started",
+    "skills": [
+      "Mentoring",
+      "Counseling Skills",
+      "Communication",
+      "Problem Solving"
+    ],
+    "estimatedHours": 0,
+    "resources": [
+      "Counselor/Psychologist supervision time",
+      "Support group resources"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Evaluate Peer Support Group Effectiveness",
+    "description": "Evaluate Peer Support Group Effectiveness",
+    "status": "not-started",
+    "skills": [
+      "Survey Design",
+      "Data Collection",
+      "Data Analysis",
+      "Communication"
+    ],
+    "estimatedHours": 0,
+    "resources": [
+      "Survey forms (paper or online)",
+      "Feedback boxes",
+      "Data analysis software (e.g.",
+      "Excel)"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Establish a Formal Partnership Agreement",
+    "description": "Establish a Formal Partnership Agreement",
+    "status": "not-started",
+    "skills": [
+      "Negotiation",
+      "Legal Review",
+      "Policy Development",
+      "Communication"
+    ],
+    "estimatedHours": 80,
+    "resources": [
+      "University legal counsel",
+      "Counseling services policies",
+      "Sample partnership agreements"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Develop a Referral System",
+    "description": "Develop a Referral System",
+    "status": "not-started",
+    "skills": [
+      "Communication",
+      "Coordination",
+      "Process Improvement",
+      "Technology"
+    ],
+    "estimatedHours": 40,
+    "resources": [
+      "Counseling services contact information",
+      "Referral forms (electronic or paper)",
+      "Training materials"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Co-Host Events with Counseling Services",
+    "description": "Co-Host Events with Counseling Services",
+    "status": "not-started",
+    "skills": [
+      "Event Planning",
+      "Communication",
+      "Collaboration",
+      "Marketing"
+    ],
+    "estimatedHours": 0,
+    "resources": [
+      "Joint event planning calendar",
+      "Shared marketing materials",
+      "Event space"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Train Initiative Team on Counseling Services Resources",
+    "description": "Train Initiative Team on Counseling Services Resources",
+    "status": "not-started",
+    "skills": [
+      "Training Delivery",
+      "Communication",
+      "Counseling Skills",
+      "Crisis Management"
+    ],
+    "estimatedHours": 24,
+    "resources": [
+      "Counseling services staff",
+      "Training materials",
+      "Crisis intervention protocols"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Participate in Counseling Services Meetings",
+    "description": "Participate in Counseling Services Meetings",
+    "status": "not-started",
+    "skills": [
+      "Communication",
+      "Collaboration",
+      "Active Listening",
+      "Problem Solving"
+    ],
+    "estimatedHours": 0,
+    "resources": [
+      "Meeting schedule",
+      "Agenda",
+      "Meeting minutes"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Curate Mental Health Resources",
+    "description": "Curate Mental Health Resources",
+    "status": "not-started",
+    "skills": [
+      "Research",
+      "Content Curation",
+      "Information Management",
+      "Communication"
+    ],
+    "estimatedHours": 56,
+    "resources": [
+      "Online databases",
+      "Libraries",
+      "Local mental health organizations"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Develop a Website or Online Resource Hub",
+    "description": "Develop a Website or Online Resource Hub",
+    "status": "not-started",
+    "skills": [
+      "Web Development",
+      "Web Design",
+      "Content Management",
+      "User Experience (UX)"
+    ],
+    "estimatedHours": 120,
+    "resources": [
+      "Web hosting",
+      "Website builder (e.g.",
+      "WordPress)",
+      "Domain name",
+      "Graphic design software"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Design and Print Informational Materials",
+    "description": "Design and Print Informational Materials",
+    "status": "not-started",
+    "skills": [
+      "Graphic Design",
+      "Marketing",
+      "Communication",
+      "Writing"
+    ],
+    "estimatedHours": 40,
+    "resources": [
+      "Graphic design software (e.g.",
+      "Canva)",
+      "Printing services",
+      "Marketing budget"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Distribute Resources",
+    "description": "Distribute Resources",
+    "status": "not-started",
+    "skills": [
+      "Communication",
+      "Marketing",
+      "Event Planning",
+      "Logistics"
+    ],
+    "estimatedHours": 0,
+    "resources": [
+      "Distribution locations",
+      "Promotional materials",
+      "Volunteer support"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Maintain and Update Website/Resources",
+    "description": "Maintain and Update Website/Resources",
+    "status": "not-started",
+    "skills": [
+      "Web Development",
+      "Content Management",
+      "Communication",
+      "Information Management"
+    ],
+    "estimatedHours": 0,
+    "resources": [
+      "Website access",
+      "Content management system (CMS)",
+      "Updated resources"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Develop an Evaluation Plan",
+    "description": "Develop an Evaluation Plan",
+    "status": "not-started",
+    "skills": [
+      "Evaluation Design",
+      "Data Analysis",
+      "Statistical Analysis",
+      "Research Methods"
+    ],
+    "estimatedHours": 40,
+    "resources": [
+      "Evaluation frameworks",
+      "Data collection tools",
+      "Statistical software"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Collect and Analyze Data",
+    "description": "Collect and Analyze Data",
+    "status": "not-started",
+    "skills": [
+      "Data Collection",
+      "Data Analysis",
+      "Statistical Analysis",
+      "Survey Design"
+    ],
+    "estimatedHours": 0,
+    "resources": [
+      "Data collection tools (e.g.",
+      "surveys",
+      "attendance sheets)",
+      "Statistical software"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Prepare an Evaluation Report",
+    "description": "Prepare an Evaluation Report",
+    "status": "not-started",
+    "skills": [
+      "Report Writing",
+      "Data Interpretation",
+      "Communication",
+      "Critical Thinking"
+    ],
+    "estimatedHours": 56,
+    "resources": [
+      "Data analysis results",
+      "Evaluation plan",
+      "Report template"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Develop a Sustainability Plan",
+    "description": "Develop a Sustainability Plan",
+    "status": "not-started",
+    "skills": [
+      "Strategic Planning",
+      "Fundraising",
+      "Partnership Development",
+      "Leadership"
+    ],
+    "estimatedHours": 80,
+    "resources": [
+      "Project evaluation report",
+      "Funding opportunities",
+      "University strategic plan"
+    ],
+    "createdBy": "ai"
+  },
+  {
+    "title": "Present Findings and Recommendations",
+    "description": "Present Findings and Recommendations",
+    "status": "not-started",
+    "skills": [
+      "Presentation Skills",
+      "Communication",
+      "Public Speaking",
+      "Advocacy"
+    ],
+    "estimatedHours": 24,
+    "resources": [
+      "Presentation materials",
+      "Stakeholder contact list",
+      "Meeting space"
+    ],
+    "createdBy": "ai"
+  }
+]

@@ -1,0 +1,122 @@
+[
+  {
+    "name": "Aaron Edwards",
+    "email": "aaron.edwards@example.com",
+    "role": "frontend developer",
+    "skills": ["React", "JavaScript", "CSS", "HTML", "TailwindCSS", "UI Design", "Wireframing", "Visual Design"]
+  },
+  {
+    "name": "James Meyer",
+    "email": "james.meyer@example.com",
+    "role": "backend developer",
+    "skills": ["Node.js", "Express", "SQL", "MongoDB", "Docker", "Database", "Systems Integration", "DevOps"]
+  },
+  {
+    "name": "Stacy Blankenship",
+    "email": "stacy.blankenship@example.com",
+    "role": "ai developer",
+    "skills": ["Python", "TensorFlow", "PyTorch", "Machine Learning", "Data Analysis", "Research", "User Analysis"]
+  },
+  {
+    "name": "Phillip Roberts",
+    "email": "phillip.roberts@example.com",
+    "role": "frontend developer",
+    "skills": ["Vue.js", "JavaScript", "CSS", "HTML", "Bootstrap", "UI Design", "Wireframing"]
+  },
+  {
+    "name": "Ann Hill",
+    "email": "ann.hill@example.com",
+    "role": "backend developer",
+    "skills": ["Ruby on Rails", "PostgreSQL", "Redis", "API Development", "Authentication", "Systems Integration", "Execution"]
+  },
+  {
+    "name": "Brett Hayes",
+    "email": "brett.hayes@example.com",
+    "role": "ai developer",
+    "skills": ["Natural Language Processing", "Computer Vision", "Python", "Keras", "Data Engineering", "Research", "Planning"]
+  },
+  {
+    "name": "Robert Alexander",
+    "email": "robert.alexander@example.com",
+    "role": "frontend developer",
+    "skills": ["Angular", "TypeScript", "SCSS", "HTML", "RxJS", "UI Design", "Communication"]
+  },
+  {
+    "name": "Michael Strickland",
+    "email": "michael.strickland@example.com",
+    "role": "backend developer",
+    "skills": ["Java", "Spring Boot", "MySQL", "Kubernetes", "Microservices", "CI/CD", "DevOps"]
+  },
+  {
+    "name": "Samantha Robinson",
+    "email": "samantha.robinson@example.com",
+    "role": "ai developer",
+    "skills": ["Deep Learning", "Python", "Scikit-learn", "Data Visualization", "Big Data", "Research", "User Analysis"]
+  },
+  {
+    "name": "Kenneth Anderson",
+    "email": "kenneth.anderson@example.com",
+    "role": "frontend developer",
+    "skills": ["Svelte", "JavaScript", "CSS", "HTML", "GraphQL", "UI Design", "Wireframing"]
+  },
+  {
+    "name": "Emily Carter",
+    "email": "emily.carter@example.com",
+    "role": "backend developer",
+    "skills": ["Go", "gRPC", "PostgreSQL", "Docker", "Cloud Infrastructure", "Systems Integration", "Execution"]
+  },
+  {
+    "name": "Daniel Thompson",
+    "email": "daniel.thompson@example.com",
+    "role": "ai developer",
+    "skills": ["Reinforcement Learning", "Python", "OpenAI Gym", "Data Preprocessing", "AI Ethics", "Research", "Planning"]
+  },
+  {
+    "name": "Sophia Martinez",
+    "email": "sophia.martinez@example.com",
+    "role": "frontend developer",
+    "skills": ["React", "Next.js", "CSS Modules", "HTML", "Webpack", "UI Design", "Communication"]
+  },
+  {
+    "name": "Ethan Brooks",
+    "email": "ethan.brooks@example.com",
+    "role": "backend developer",
+    "skills": ["C#", ".NET Core", "SQL Server", "Azure", "API Design", "Systems Integration", "Execution"]
+  },
+  {
+    "name": "Olivia Johnson",
+    "email": "olivia.johnson@example.com",
+    "role": "ai developer",
+    "skills": ["Generative AI", "Python", "GANs", "Data Augmentation", "AI Model Optimization", "Research", "Planning"]
+  },
+  {
+    "name": "Laura Bennett",
+    "email": "laura.bennett@example.com",
+    "role": "project manager",
+    "skills": ["Project Planning", "Team Coordination", "Risk Management", "Agile Methodologies", "Scrum", "Organization", "Execution"]
+  },
+  {
+    "name": "Mark Peterson",
+    "email": "mark.peterson@example.com",
+    "role": "qa engineer",
+    "skills": ["Testing", "Automation", "Integration", "Bug Tracking", "Regression Testing", "Quality Assurance", "Execution"]
+  },
+  {
+    "name": "Sarah Collins",
+    "email": "sarah.collins@example.com",
+    "role": "project manager",
+    "skills": ["Organization", "Resource Allocation", "Stakeholder Communication", "Budget Management", "Project Documentation", "Planning", "Execution"]
+  },
+  {
+    "name": "Tom Harris",
+    "email": "tom.harris@example.com",
+    "role": "qa engineer",
+    "skills": ["Manual Testing", "Performance Testing", "Test Case Design", "API Testing", "Load Testing", "Quality Assurance", "Execution"]
+  },
+  {
+    "name": "Jessica Wright",
+    "email": "jessica.wright@example.com",
+    "role": "project manager",
+    "skills": ["Strategic Planning", "Change Management", "Process Improvement", "Leadership", "Cross-functional Collaboration", "Organization", "Execution"]
+  }
+]
