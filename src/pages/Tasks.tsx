@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useProjects } from '@/contexts/ProjectContext';
 import Layout from '@/components/layout/Layout';
@@ -63,11 +62,11 @@ const Tasks = () => {
   const getTaskStatusBadge = (status: string) => {
     switch (status) {
       case 'not-started': 
-        return <Badge variant="outline" className="bg-gray-100">Not Started</Badge>;
+        return <Badge variant="outline" className="bg-gray-100 dark:bg-gray-800 dark:text-gray-200">Not Started</Badge>;
       case 'in-progress': 
-        return <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100">In Progress</Badge>;
+        return <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100 dark:bg-amber-900 dark:text-amber-100">In Progress</Badge>;
       case 'completed': 
-        return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Completed</Badge>;
+        return <Badge className="bg-green-100 text-green-800 hover:bg-green-100 dark:bg-green-900 dark:text-green-100">Completed</Badge>;
       default:
         return <Badge variant="outline">Unknown</Badge>;
     }
@@ -173,7 +172,7 @@ const Tasks = () => {
         {(projectFilter || statusFilter) && (
           <div className="flex gap-2">
             {projectFilter && (
-              <Badge variant="outline" className="px-3 py-1">
+              <Badge variant="outline" className="px-3 py-1 dark:bg-gray-800 dark:text-white">
                 Project: {projects.find(p => p.id === projectFilter)?.title}
                 <button 
                   className="ml-2 text-muted-foreground hover:text-foreground"
@@ -184,7 +183,7 @@ const Tasks = () => {
               </Badge>
             )}
             {statusFilter && (
-              <Badge variant="outline" className="px-3 py-1">
+              <Badge variant="outline" className="px-3 py-1 dark:bg-gray-800 dark:text-white">
                 Status: {statusFilter.replace('-', ' ')}
                 <button 
                   className="ml-2 text-muted-foreground hover:text-foreground"
@@ -249,12 +248,12 @@ const Tasks = () => {
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
                         {task.skills.slice(0, 2).map((skill: string, index: number) => (
-                          <Badge key={index} variant="outline" className="bg-slate-50">
+                          <Badge key={index} variant="outline" className="bg-slate-50 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
                             {skill}
                           </Badge>
                         ))}
                         {task.skills.length > 2 && (
-                          <Badge variant="outline" className="bg-slate-50">
+                          <Badge variant="outline" className="bg-slate-50 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
                             +{task.skills.length - 2}
                           </Badge>
                         )}

@@ -356,12 +356,12 @@ const Employees = () => {
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
                           {employee.skills.slice(0, 3).map((skill, index) => (
-                            <Badge key={index} variant="outline" className="bg-slate-50">
+                            <Badge key={index} variant="outline" className="bg-slate-50 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
                               {skill}
                             </Badge>
                           ))}
                           {employee.skills.length > 3 && (
-                            <Badge variant="outline" className="bg-slate-50">
+                            <Badge variant="outline" className="bg-slate-50 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
                               +{employee.skills.length - 3}
                             </Badge>
                           )}

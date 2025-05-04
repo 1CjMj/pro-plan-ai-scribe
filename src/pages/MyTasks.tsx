@@ -47,7 +47,7 @@ const TaskCard = ({ task, onStatusChange }: {
         <div className="mt-auto space-y-3 pt-3 border-t">
           <div className="flex flex-wrap gap-1">
             {task.skills.map((skill: string, index: number) => (
-              <Badge key={index} variant="outline" className="bg-slate-50">
+              <Badge key={index} variant="outline" className="bg-slate-50 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
                 {skill}
               </Badge>
             ))}
