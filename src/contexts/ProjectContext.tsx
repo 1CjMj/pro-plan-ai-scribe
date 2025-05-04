@@ -147,6 +147,172 @@ const initialProjects: Project[] = [
   }
 ];
 
+// Combine mock employees from Employees.tsx and existing ones
+const initialEmployees = [
+  // Employees from Employees.tsx
+  {
+    id: "user-001",
+    name: "Aaron Edwards",
+    email: "aaron.edwards@example.com",
+    role: "frontend developer",
+    skills: ["React", "JavaScript", "CSS", "HTML", "TailwindCSS", "UI Design", "Wireframing", "Visual Design"],
+  },
+  {
+    id: "user-002",
+    name: "James Meyer",
+    email: "james.meyer@example.com",
+    role: "backend developer",
+    skills: ["Node.js", "Express", "SQL", "MongoDB", "Docker", "Database", "Systems Integration", "DevOps"],
+  },
+  {
+    id: "user-003",
+    name: "Stacy Blankenship",
+    email: "stacy.blankenship@example.com",
+    role: "ai developer",
+    skills: ["Python", "TensorFlow", "PyTorch", "Machine Learning", "Data Analysis", "Research", "User Analysis"],
+  },
+  {
+    id: "user-004",
+    name: "Phillip Roberts",
+    email: "phillip.roberts@example.com",
+    role: "frontend developer",
+    skills: ["Vue.js", "JavaScript", "CSS", "HTML", "Bootstrap", "UI Design", "Wireframing"],
+  },
+  {
+    id: "user-005",
+    name: "Ann Hill",
+    email: "ann.hill@example.com",
+    role: "backend developer",
+    skills: ["Ruby on Rails", "PostgreSQL", "Redis", "API Development", "Authentication", "Systems Integration", "Execution"],
+  },
+  {
+    id: "user-006",
+    name: "Brett Hayes",
+    email: "brett.hayes@example.com",
+    role: "ai developer",
+    skills: ["Natural Language Processing", "Computer Vision", "Python", "Keras", "Data Engineering", "Research", "Planning"],
+  },
+  {
+    id: "user-007",
+    name: "Robert Alexander",
+    email: "robert.alexander@example.com",
+    role: "frontend developer",
+    skills: ["Angular", "TypeScript", "SCSS", "HTML", "RxJS", "UI Design", "Communication"],
+  },
+  {
+    id: "user-008",
+    name: "Michael Strickland",
+    email: "michael.strickland@example.com",
+    role: "backend developer",
+    skills: ["Java", "Spring Boot", "MySQL", "Kubernetes", "Microservices", "CI/CD", "DevOps"],
+  },
+  {
+    id: "user-009",
+    name: "Samantha Robinson",
+    email: "samantha.robinson@example.com",
+    role: "ai developer",
+    skills: ["Deep Learning", "Python", "Scikit-learn", "Data Visualization", "Big Data", "Research", "User Analysis"],
+  },
+  {
+    id: "user-010",
+    name: "Kenneth Anderson",
+    email: "kenneth.anderson@example.com",
+    role: "frontend developer",
+    skills: ["Svelte", "JavaScript", "CSS", "HTML", "GraphQL", "UI Design", "Wireframing"],
+  },
+  {
+    id: "user-011",
+    name: "Emily Carter",
+    email: "emily.carter@example.com",
+    role: "backend developer",
+    skills: ["Go", "gRPC", "PostgreSQL", "Docker", "Cloud Infrastructure", "Systems Integration", "Execution"],
+  },
+  {
+    id: "user-012",
+    name: "Daniel Thompson",
+    email: "daniel.thompson@example.com",
+    role: "ai developer",
+    skills: ["Reinforcement Learning", "Python", "OpenAI Gym", "Data Preprocessing", "AI Ethics", "Research", "Planning"],
+  },
+  {
+    id: "user-013",
+    name: "Sophia Martinez",
+    email: "sophia.martinez@example.com",
+    role: "frontend developer",
+    skills: ["React", "Next.js", "CSS Modules", "HTML", "Webpack", "UI Design", "Communication"],
+  },
+  {
+    id: "user-014",
+    name: "Ethan Brooks",
+    email: "ethan.brooks@example.com",
+    role: "backend developer",
+    skills: ["C#", ".NET Core", "SQL Server", "Azure", "API Design", "Systems Integration", "Execution"],
+  },
+  {
+    id: "user-015",
+    name: "Olivia Johnson",
+    email: "olivia.johnson@example.com",
+    role: "ai developer",
+    skills: ["Generative AI", "Python", "GANs", "Data Augmentation", "AI Model Optimization", "Research", "Planning"],
+  },
+  {
+    id: "user-016",
+    name: "Laura Bennett",
+    email: "laura.bennett@example.com",
+    role: "project manager",
+    skills: ["Project Planning", "Team Coordination", "Risk Management", "Agile Methodologies", "Scrum", "Organization", "Execution"],
+  },
+  {
+    id: "user-017",
+    name: "Mark Peterson",
+    email: "mark.peterson@example.com",
+    role: "qa engineer",
+    skills: ["Testing", "Automation", "Integration", "Bug Tracking", "Regression Testing", "Quality Assurance", "Execution"],
+  },
+  {
+    id: "user-018",
+    name: "Sarah Collins",
+    email: "sarah.collins@example.com",
+    role: "project manager",
+    skills: ["Organization", "Resource Allocation", "Stakeholder Communication", "Budget Management", "Project Documentation", "Planning", "Execution"],
+  },
+  {
+    id: "user-019",
+    name: "Tom Harris",
+    email: "tom.harris@example.com",
+    role: "qa engineer",
+    skills: ["Manual Testing", "Performance Testing", "Test Case Design", "API Testing", "Load Testing", "Quality Assurance", "Execution"],
+  },
+  {
+    id: "user-020",
+    name: "Jessica Wright",
+    email: "jessica.wright@example.com",
+    role: "project manager",
+    skills: ["Strategic Planning", "Change Management", "Process Improvement", "Leadership", "Cross-functional Collaboration", "Organization", "Execution"],
+  },
+  // Existing employees (IDs amended)
+  {
+    id: "user-021",
+    name: "Jane Worker",
+    skills: ["React", "JavaScript", "UI Design", "Content Writing", "Frontend Development"],
+  },
+  {
+    id: "user-022",
+    name: "Bob Developer",
+    skills: ["Backend Development", "API Design", "Database Design", "SQL", "DevOps"],
+  },
+  {
+    id: "user-023",
+    name: "Alice Designer",
+    skills: ["UI/UX Design", "Graphic Design", "Visual Design", "Art Direction", "Brand Strategy"],
+  },
+  {
+    id: "user-024",
+    name: "Charlie Manager",
+    skills: ["Project Management", "Communication", "Risk Management", "Strategic Planning", "Presentation"],
+  },
+];
+
 const loadDefaultEmployees = async () => {
   try {
     const response = await fetch('/backend/employees.json');
@@ -404,96 +570,56 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
   };
 
   const autoAssignTasks = async (projectId: string) => {
-    setLoading(true);
     const project = projects.find(p => p.id === projectId);
-    
+
     if (!project) {
       toast({
         title: "Error",
         description: "Project not found",
         variant: "destructive",
       });
-      setLoading(false);
       return;
     }
 
-    try {
-      const employees = [
-        {
-          id: 'user-002',
-          name: 'Jane Worker',
-          skills: ['React', 'JavaScript', 'UI Design', 'Content Writing', 'Frontend Development'],
-        },
-        {
-          id: 'user-003',
-          name: 'Bob Developer',
-          skills: ['Backend Development', 'API Design', 'Database Design', 'SQL', 'DevOps'],
-        },
-        {
-          id: 'user-004',
-          name: 'Alice Designer',
-          skills: ['UI/UX Design', 'Graphic Design', 'Visual Design', 'Art Direction', 'Brand Strategy'],
-        },
-        {
-          id: 'user-005',
-          name: 'Charlie Manager',
-          skills: ['Project Management', 'Communication', 'Risk Management', 'Strategic Planning', 'Presentation'],
-        },
-      ];
+    const updatedTasks = await Promise.all(
+      project.tasks.map(async task => {
+        if (task.assignedTo) return task; // Skip already assigned tasks
 
-      const updatedProjects = await Promise.all(projects.map(async (p) => {
-        if (p.id === projectId) {
-          const updatedTasks = await Promise.all(p.tasks.map(async (task) => {
-            if (task.assignedTo) return task;
+        // Find the best match employee based on skills
+        let bestMatch = null;
+        let bestMatchScore = 0;
 
-            let bestMatch = null;
-            let bestMatchScore = 0;
+        for (const employee of initialEmployees) {
+          const matchScore = await calculateSkillMatch(task.skills, employee.skills); // Await the promise
+          if (matchScore > bestMatchScore) {
+            bestMatch = employee;
+            bestMatchScore = matchScore;
+          }
+        }
 
-            for (const employee of employees) {
-              const matchScore = await calculateSkillMatch(task.skills, employee.skills);
-              
-              if (matchScore > bestMatchScore) {
-                bestMatch = employee;
-                bestMatchScore = matchScore;
-              }
-            }
-
-            if (bestMatch && bestMatchScore >= 0.5) {
-              return {
-                ...task,
-                assignedTo: bestMatch.id,
-                assignedToName: bestMatch.name,
-                updatedAt: new Date().toISOString(),
-              };
-            }
-
-            return task;
-          }));
-
+        if (bestMatch && bestMatchScore >= 0.5) {
           return {
-            ...p,
-            tasks: updatedTasks,
+            ...task,
+            assignedTo: bestMatch.id,
+            assignedToName: bestMatch.name,
             updatedAt: new Date().toISOString(),
           };
         }
-        return p;
-      }));
 
-      setProjects(updatedProjects);
-      
-      toast({
-        title: "Tasks assigned",
-        description: "Tasks have been automatically assigned based on AI skill matching.",
-      });
-    } catch (error) {
-      toast({
-        title: "Error assigning tasks",
-        description: error instanceof Error ? error.message : "Failed to assign tasks",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
+        return task; // Return task unmodified if no match found
+      })
+    );
+
+    setProjects(prevProjects =>
+      prevProjects.map(p =>
+        p.id === projectId ? { ...p, tasks: updatedTasks, updatedAt: new Date().toISOString() } : p
+      )
+    );
+
+    toast({
+      title: "Tasks Assigned",
+      description: "Tasks have been automatically assigned based on skills.",
+    });
   };
 
   const getTasksByUserId = (userId: string): Task[] => {

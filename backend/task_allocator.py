@@ -1,5 +1,6 @@
 import json
 from task_generator_coding import recommend_skills_and_resources
+from difflib import SequenceMatcher
 
 def load_data(tasks_file, candidates_file):
     """Load tasks from a JSONL file and candidates from a JSON file."""
@@ -25,9 +26,17 @@ def load_data(tasks_file, candidates_file):
     
     return tasks, candidates
 
+def calculate_similarity(skill1, skill2):
+    """Calculate similarity between two skills using SequenceMatcher."""
+    return SequenceMatcher(None, skill1, skill2).ratio()
+
 def allocate_tasks_with_time_estimation(tasks, candidates):
-    """Allocate tasks to candidates and include time estimations."""
+    """Allocate tasks to candidates with fuzzy skill matching and workload balancing."""
     assigned_tasks = []
+
+    # Initialize workload tracking
+    for candidate in candidates:
+        candidate["task_count"] = 0
 
     for task in tasks:
         # Use AI to recommend skills and resources if not already provided
@@ -41,11 +50,19 @@ def allocate_tasks_with_time_estimation(tasks, candidates):
 
         for candidate in candidates:
             match_score = 0
-            if all(skill in candidate["skills"] for skill in task["skills"]):
-                match_score += len(task["skills"])  # Higher score for more matching skills
+
+            # Fuzzy skill matching
+            for task_skill in task["skills"]:
+                for candidate_skill in candidate["skills"]:
+                    similarity = calculate_similarity(task_skill, candidate_skill)
+                    if similarity > 0.7:  # Threshold for similarity
+                        match_score += similarity
+
+            # Add score for availability and workload balancing
             if candidate["availability"]:
-                match_score += 1  # Add score if the candidate is available
-            
+                match_score += 1
+            match_score -= candidate["task_count"] * 0.1  # Penalize candidates with more tasks
+
             # Update the best candidate if this one is better
             if match_score > best_match_score:
                 best_match_score = match_score
@@ -61,8 +78,9 @@ def allocate_tasks_with_time_estimation(tasks, candidates):
                 "complexity": task["complexity"],
                 "time_days": task["time_days"]
             })
-            # Mark the candidate as unavailable
+            # Mark the candidate as unavailable and update workload
             best_candidate["availability"] = False
+            best_candidate["task_count"] += 1
         else:
             # If no candidate is found, leave the task unassigned
             assigned_tasks.append({

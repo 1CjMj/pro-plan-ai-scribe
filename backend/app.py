@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from task_generator_coding import generate_project_tasks, parse_tasks
 from task_generator_non_coding import generate_non_coding_tasks, parse_tasks as parse_non_coding_tasks
+from task_allocator import allocate_tasks_with_time_estimation
 import logging
 
 # Configure logging
@@ -48,6 +49,23 @@ def generate_tasks_non_coding():
     except Exception as e:
         logging.exception("Error occurred while generating non-coding tasks.")
         return jsonify({"error": str(e)}), 500
+
+# Endpoint for task allocation
+@app.route('/allocate-tasks', methods=['POST'])
+def allocate_tasks():
+    """API endpoint to allocate tasks to employees."""
+    try:
+        # Load tasks and candidates from request body
+        data = request.get_json()
+        tasks = data.get('tasks', [])
+        candidates = data.get('candidates', [])
+
+        # Perform task allocation
+        assigned_tasks = allocate_tasks_with_time_estimation(tasks, candidates)
+
+        return jsonify({"success": True, "assigned_tasks": assigned_tasks}), 200
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

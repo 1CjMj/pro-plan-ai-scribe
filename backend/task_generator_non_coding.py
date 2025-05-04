@@ -1,5 +1,6 @@
 import google.generativeai as genai
 import json
+from difflib import SequenceMatcher
 
 # Configure Gemini API
 GEMINI_API_KEY = "AIzaSyBXgkoIoxI7oE24Wr5V-SJ0ZG_lxg1hpLs"  # Replace with your actual key
@@ -79,6 +80,80 @@ def recommend_skills_and_resources(task_description):
             "resources": tasks[0].get("resources", [])
         }
     return {"skills": [], "resources": []}
+
+def calculate_similarity(skill1, skill2):
+    """Calculate similarity between two skills using SequenceMatcher."""
+    return SequenceMatcher(None, skill1, skill2).ratio()
+
+def classify_skills_with_gemini(skill):
+    """Use Gemini AI to classify a skill into a broader category."""
+    # Example: Replace this with actual Gemini API integration
+    skill_groups = {
+        "Frontend Programming Language": ["HTML", "React", "CSS", "JavaScript"],
+        "Backend Programming Language": ["Node.js", "Python", "Java", "Ruby"],
+        "Database Management": ["SQL", "MongoDB", "PostgreSQL", "Redis"],
+    }
+    for group, skills in skill_groups.items():
+        if skill in skills:
+            return group
+    return "Other"
+
+def allocate_tasks_with_time_estimation(tasks, candidates):
+    """Allocate tasks to candidates with enhanced fuzzy skill matching."""
+    assigned_tasks = []
+
+    # Initialize workload tracking
+    for candidate in candidates:
+        candidate["task_count"] = 0
+
+    for task in tasks:
+        best_candidate = None
+        best_match_score = 0
+
+        for candidate in candidates:
+            match_score = 0
+
+            # Enhanced fuzzy skill matching
+            for task_skill in task["skills"]:
+                task_skill_group = classify_skills_with_gemini(task_skill)
+                for candidate_skill in candidate["skills"]:
+                    candidate_skill_group = classify_skills_with_gemini(candidate_skill)
+                    if task_skill_group == candidate_skill_group:
+                        match_score += 1
+
+            # Add score for availability and workload balancing
+            if candidate["availability"]:
+                match_score += 1
+            match_score -= candidate["task_count"] * 0.1  # Penalize candidates with more tasks
+
+            # Update the best candidate if this one is better
+            if match_score > best_match_score:
+                best_match_score = match_score
+                best_candidate = candidate
+
+        # Assign the task to the best candidate
+        if best_candidate:
+            assigned_tasks.append({
+                "task": task["title"],
+                "assigned_to": best_candidate["name"],
+                "skills": task["skills"],
+                "resources": task["resources"],
+                "estimatedHours": task["estimatedHours"]
+            })
+            # Mark the candidate as unavailable and update workload
+            best_candidate["availability"] = False
+            best_candidate["task_count"] += 1
+        else:
+            # If no candidate is found, assign to the closest match or leave unassigned
+            assigned_tasks.append({
+                "task": task["title"],
+                "assigned_to": None,
+                "skills": task["skills"],
+                "resources": task["resources"],
+                "estimatedHours": task["estimatedHours"]
+            })
+
+    return assigned_tasks
 
 if __name__ == "__main__":
     import sys
