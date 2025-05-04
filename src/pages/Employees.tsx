@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
@@ -43,52 +42,164 @@ import { useProjects } from '@/contexts/ProjectContext';
 // Mock employee data
 const employees = [
   {
-    id: 'user-002',
-    name: 'Jane Worker',
-    email: 'jane.worker@example.com',
-    role: 'Frontend Developer',
-    skills: ['React', 'JavaScript', 'UI Design', 'Content Writing', 'Frontend Development'],
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jane',
+    id: "user-001",
+    name: "Aaron Edwards",
+    email: "aaron.edwards@example.com",
+    role: "frontend developer",
+    skills: ["React", "JavaScript", "CSS", "HTML", "TailwindCSS", "UI Design", "Wireframing", "Visual Design"],
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Aaron",
   },
   {
-    id: 'user-003',
-    name: 'Bob Developer',
-    email: 'bob.developer@example.com',
-    role: 'Backend Developer',
-    skills: ['Backend Development', 'API Design', 'Database Design', 'SQL', 'DevOps'],
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Bob',
+    id: "user-002",
+    name: "James Meyer",
+    email: "james.meyer@example.com",
+    role: "backend developer",
+    skills: ["Node.js", "Express", "SQL", "MongoDB", "Docker", "Database", "Systems Integration", "DevOps"],
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=James",
   },
   {
-    id: 'user-004',
-    name: 'Alice Designer',
-    email: 'alice.designer@example.com',
-    role: 'UI/UX Designer',
-    skills: ['UI/UX Design', 'Graphic Design', 'Visual Design', 'Art Direction', 'Brand Strategy'],
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alice',
+    id: "user-003",
+    name: "Stacy Blankenship",
+    email: "stacy.blankenship@example.com",
+    role: "ai developer",
+    skills: ["Python", "TensorFlow", "PyTorch", "Machine Learning", "Data Analysis", "Research", "User Analysis"],
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Stacy",
   },
   {
-    id: 'user-005',
-    name: 'Charlie Manager',
-    email: 'charlie.manager@example.com',
-    role: 'Project Manager',
-    skills: ['Project Management', 'Communication', 'Risk Management', 'Strategic Planning', 'Presentation'],
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Charlie',
+    id: "user-004",
+    name: "Phillip Roberts",
+    email: "phillip.roberts@example.com",
+    role: "frontend developer",
+    skills: ["Vue.js", "JavaScript", "CSS", "HTML", "Bootstrap", "UI Design", "Wireframing"],
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Phillip",
   },
   {
-    id: 'user-006',
-    name: 'David Writer',
-    email: 'david.writer@example.com',
-    role: 'Content Writer',
-    skills: ['Content Writing', 'Copywriting', 'SEO', 'Research', 'Editing'],
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David',
+    id: "user-005",
+    name: "Ann Hill",
+    email: "ann.hill@example.com",
+    role: "backend developer",
+    skills: ["Ruby on Rails", "PostgreSQL", "Redis", "API Development", "Authentication", "Systems Integration", "Execution"],
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ann",
   },
   {
-    id: 'user-007',
-    name: 'Eva Analyst',
-    email: 'eva.analyst@example.com',
-    role: 'Data Analyst',
-    skills: ['Data Analysis', 'Statistics', 'SQL', 'Python', 'Data Visualization'],
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Eva',
+    id: "user-006",
+    name: "Brett Hayes",
+    email: "brett.hayes@example.com",
+    role: "ai developer",
+    skills: ["Natural Language Processing", "Computer Vision", "Python", "Keras", "Data Engineering", "Research", "Planning"],
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Brett",
+  },
+  {
+    id: "user-007",
+    name: "Robert Alexander",
+    email: "robert.alexander@example.com",
+    role: "frontend developer",
+    skills: ["Angular", "TypeScript", "SCSS", "HTML", "RxJS", "UI Design", "Communication"],
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Robert",
+  },
+  {
+    id: "user-008",
+    name: "Michael Strickland",
+    email: "michael.strickland@example.com",
+    role: "backend developer",
+    skills: ["Java", "Spring Boot", "MySQL", "Kubernetes", "Microservices", "CI/CD", "DevOps"],
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
+  },
+  {
+    id: "user-009",
+    name: "Samantha Robinson",
+    email: "samantha.robinson@example.com",
+    role: "ai developer",
+    skills: ["Deep Learning", "Python", "Scikit-learn", "Data Visualization", "Big Data", "Research", "User Analysis"],
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Samantha",
+  },
+  {
+    id: "user-010",
+    name: "Kenneth Anderson",
+    email: "kenneth.anderson@example.com",
+    role: "frontend developer",
+    skills: ["Svelte", "JavaScript", "CSS", "HTML", "GraphQL", "UI Design", "Wireframing"],
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Kenneth",
+  },
+  {
+    id: "user-011",
+    name: "Emily Carter",
+    email: "emily.carter@example.com",
+    role: "backend developer",
+    skills: ["Go", "gRPC", "PostgreSQL", "Docker", "Cloud Infrastructure", "Systems Integration", "Execution"],
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emily",
+  },
+  {
+    id: "user-012",
+    name: "Daniel Thompson",
+    email: "daniel.thompson@example.com",
+    role: "ai developer",
+    skills: ["Reinforcement Learning", "Python", "OpenAI Gym", "Data Preprocessing", "AI Ethics", "Research", "Planning"],
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Daniel",
+  },
+  {
+    id: "user-013",
+    name: "Sophia Martinez",
+    email: "sophia.martinez@example.com",
+    role: "frontend developer",
+    skills: ["React", "Next.js", "CSS Modules", "HTML", "Webpack", "UI Design", "Communication"],
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sophia",
+  },
+  {
+    id: "user-014",
+    name: "Ethan Brooks",
+    email: "ethan.brooks@example.com",
+    role: "backend developer",
+    skills: ["C#", ".NET Core", "SQL Server", "Azure", "API Design", "Systems Integration", "Execution"],
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ethan",
+  },
+  {
+    id: "user-015",
+    name: "Olivia Johnson",
+    email: "olivia.johnson@example.com",
+    role: "ai developer",
+    skills: ["Generative AI", "Python", "GANs", "Data Augmentation", "AI Model Optimization", "Research", "Planning"],
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Olivia",
+  },
+  {
+    id: "user-016",
+    name: "Laura Bennett",
+    email: "laura.bennett@example.com",
+    role: "project manager",
+    skills: ["Project Planning", "Team Coordination", "Risk Management", "Agile Methodologies", "Scrum", "Organization", "Execution"],
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Laura",
+  },
+  {
+    id: "user-017",
+    name: "Mark Peterson",
+    email: "mark.peterson@example.com",
+    role: "qa engineer",
+    skills: ["Testing", "Automation", "Integration", "Bug Tracking", "Regression Testing", "Quality Assurance", "Execution"],
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mark",
+  },
+  {
+    id: "user-018",
+    name: "Sarah Collins",
+    email: "sarah.collins@example.com",
+    role: "project manager",
+    skills: ["Organization", "Resource Allocation", "Stakeholder Communication", "Budget Management", "Project Documentation", "Planning", "Execution"],
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
+  },
+  {
+    id: "user-019",
+    name: "Tom Harris",
+    email: "tom.harris@example.com",
+    role: "qa engineer",
+    skills: ["Manual Testing", "Performance Testing", "Test Case Design", "API Testing", "Load Testing", "Quality Assurance", "Execution"],
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Tom",
+  },
+  {
+    id: "user-020",
+    name: "Jessica Wright",
+    email: "jessica.wright@example.com",
+    role: "project manager",
+    skills: ["Strategic Planning", "Change Management", "Process Improvement", "Leadership", "Cross-functional Collaboration", "Organization", "Execution"],
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jessica",
   },
 ];
 
@@ -102,16 +213,30 @@ const ImportEmployeesDialog = ({
   const [jsonData, setJsonData] = useState('');
   const { importEmployeesFromFile } = useProjects();
   
+  const handleFileUpload = async (file: File) => {
+    try {
+      const text = await file.text();
+      setJsonData(text);
+    } catch (error) {
+      console.error('Error reading file:', error);
+      alert('Failed to read the file. Please try again.');
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
+      if (!jsonData.trim()) {
+        throw new Error('No JSON data provided');
+      }
+
       const data = JSON.parse(jsonData);
       await importEmployeesFromFile(data);
       onOpenChange(false);
     } catch (error) {
       console.error('Error parsing JSON:', error);
-      alert('Invalid JSON data');
+      alert('Invalid JSON data. Please check the format and try again.');
     }
   };
   
@@ -129,7 +254,17 @@ const ImportEmployeesDialog = ({
             <div>
               <Label htmlFor="json-file">Upload JSON File</Label>
               <div className="mt-2 flex items-center gap-4">
-                <Input id="json-file" type="file" accept=".json" className="flex-1" />
+                <Input
+                  id="json-file"
+                  type="file"
+                  accept=".json"
+                  className="flex-1"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      handleFileUpload(e.target.files[0]);
+                    }
+                  }}
+                />
                 <Button type="button" variant="outline">
                   <Upload className="mr-2 h-4 w-4" />
                   Upload

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useProjects } from '@/contexts/ProjectContext';
@@ -709,7 +708,7 @@ const ProjectDetail = () => {
                               )}
                             </div>
                           </TableCell>
-                          <TableCell>{task.estimatedHours}</TableCell>
+                          <TableCell>{isNaN(task.estimatedHours) ? 'N/A' : task.estimatedHours}</TableCell>
                           <TableCell className="text-right">
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
@@ -804,7 +803,7 @@ const ProjectDetail = () => {
                                 )}
                               </div>
                             </TableCell>
-                            <TableCell>{task.estimatedHours}</TableCell>
+                            <TableCell>{isNaN(task.estimatedHours) ? 'N/A' : task.estimatedHours}</TableCell>
                             <TableCell className="text-right">
                               <Button 
                                 variant="outline"
@@ -878,7 +877,7 @@ const ProjectDetail = () => {
                                 )}
                               </div>
                             </TableCell>
-                            <TableCell>{task.estimatedHours}</TableCell>
+                            <TableCell>{isNaN(task.estimatedHours) ? 'N/A' : task.estimatedHours}</TableCell>
                             <TableCell className="text-right">
                               <Button 
                                 variant="outline"
@@ -952,7 +951,7 @@ const ProjectDetail = () => {
                                 )}
                               </div>
                             </TableCell>
-                            <TableCell>{task.estimatedHours}</TableCell>
+                            <TableCell>{isNaN(task.estimatedHours) ? 'N/A' : task.estimatedHours}</TableCell>
                             <TableCell className="text-right">
                               <Button 
                                 variant="ghost"

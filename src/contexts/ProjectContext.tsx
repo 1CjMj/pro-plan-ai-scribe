@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useAuth } from './AuthContext';
 import { updateProjectStatus as updateProjectStatusUtil, deleteProject as deleteProjectUtil } from '@/lib/projectUtils';
 import AIStatusBar from '@/components/ui/AIStatusBar';
-import { initializeAIModels, generateTasksFromText, calculateSkillMatch } from '@/utils/ai';
+import { generateTasksFromText, calculateSkillMatch } from '@/utils/ai';
 
 // Define project-related types
 export type ProjectStatus = 'planning' | 'in-progress' | 'completed' | 'on-hold';
@@ -147,6 +147,28 @@ const initialProjects: Project[] = [
   }
 ];
 
+const loadDefaultEmployees = async () => {
+  try {
+    const response = await fetch('/backend/employees.json');
+    if (!response.ok) {
+      throw new Error('Failed to fetch employees.json');
+    }
+    const employees = await response.json();
+    return employees;
+  } catch (error) {
+    console.error('Error loading default employees:', error);
+    return [];
+  }
+};
+
+const createEmployeeAccounts = (employees) => {
+  employees.forEach(employee => {
+    // Mock account creation logic
+    console.log(`Creating account for ${employee.name} (${employee.email})`);
+    // Add logic to save accounts to a database or state
+  });
+};
+
 export function ProjectProvider({ children }: { children: React.ReactNode }) {
   const [projects, setProjects] = useState<Project[]>([]);
   const [resources, setResources] = useState<Resource[]>([]);
@@ -156,23 +178,29 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
   const { toast } = useToast();
   const { currentUser } = useAuth();
 
-  // Initialize AI models
   useEffect(() => {
-    const loadAI = async () => {
+    const initializeEmployees = async () => {
+      const employees = await loadDefaultEmployees();
+      createEmployeeAccounts(employees);
+    };
+
+    initializeEmployees();
+  }, []);
+
+  useEffect(() => {
+    const loadAIModels = async () => {
       try {
-        setAILoading(true);
-        const success = await initializeAIModels();
-        if (!success) {
-          setAIError('Failed to initialize AI models');
-        }
+        // Simulate AI model loading or replace with actual logic
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        setAIError(null);
       } catch (error) {
-        setAIError(error instanceof Error ? error.message : 'Unknown error initializing AI');
+        setAIError('Failed to load AI models');
       } finally {
         setAILoading(false);
       }
     };
 
-    loadAI();
+    loadAIModels();
   }, []);
 
   // Load saved data on mount
@@ -548,13 +576,17 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
   };
   
   const importEmployeesFromFile = async (data: any) => {
-    // Mock implementation - would validate and process file data
-    toast({
-      title: "Employees imported",
-      description: "Employee data has been imported successfully.",
-    });
-    
-    return Promise.resolve();
+    try {
+      const newEmployees = data.map(employee => ({
+        ...employee,
+        id: `user-${Math.random().toString(36).substr(2, 9)}` // Generate unique ID
+      }));
+
+      createEmployeeAccounts(newEmployees);
+      console.log('Imported employees:', newEmployees);
+    } catch (error) {
+      console.error('Error importing employees:', error);
+    }
   };
   
   const importResourcesFromFile = async (data: any) => {

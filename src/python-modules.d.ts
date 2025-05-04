@@ -6,3 +6,5 @@ declare module '../../backend/task_generator_coding' {
 declare module '../../backend/task_generator_non_coding' {
     export function generateTasks(description: string): Promise<any>;
 }
+
+declare module 'axios';

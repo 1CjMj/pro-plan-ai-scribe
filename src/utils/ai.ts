@@ -1,42 +1,7 @@
-
 import type { Task } from '@/contexts/ProjectContext';
 
 // Google Generative AI configuration
 const GEMINI_API_KEY = "AIzaSyBXgkoIoxI7oE24Wr5V-SJ0ZG_lxg1hpLs";
-
-/**
- * Initialize AI models needed for the application
- */
-export const initializeAIModels = async (): Promise<boolean> => {
-  try {
-    // Test the Gemini API connection with a simple call
-    const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + GEMINI_API_KEY, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              { text: "Respond with 'OK' if this connection is working." }
-            ]
-          }
-        ]
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
-    }
-
-    console.log('AI models initialized successfully');
-    return true;
-  } catch (error) {
-    console.error('Failed to initialize AI models:', error);
-    return false;
-  }
-};
 
 /**
  * Parse tasks from the AI response output
@@ -44,52 +9,54 @@ export const initializeAIModels = async (): Promise<boolean> => {
 const parseTasks = (output: string): Omit<Task, 'id' | 'projectId' | 'createdAt' | 'updatedAt'>[] => {
   const tasks: Omit<Task, 'id' | 'projectId' | 'createdAt' | 'updatedAt'>[] = [];
   const lines = output.split('\n');
-  
+
   let currentTask: Partial<Omit<Task, 'id' | 'projectId' | 'createdAt' | 'updatedAt'>> | null = null;
-  
+
   for (const line of lines) {
     const trimmedLine = line.trim();
-    
-    if (trimmedLine.startsWith("- Task:")) {
-      // Save previous task if exists
+
+    if (trimmedLine.startsWith("*   **Task:**")) {
+      // Save the previous task if it exists
       if (currentTask) {
         tasks.push(currentTask as Omit<Task, 'id' | 'projectId' | 'createdAt' | 'updatedAt'>);
       }
-      
-      // Start new task
+
+      // Start a new task
       currentTask = {
-        title: trimmedLine.split(":", 1)[1]?.trim() || "New Task",
-        description: trimmedLine.split(":", 1)[1]?.trim() || "Task description",
+        title: trimmedLine.split("**Task:**")[1]?.trim() || "New Task",
+        description: "",
         status: "not-started",
         skills: [],
         estimatedHours: 0,
         resources: [],
-        createdBy: "ai"
+        createdBy: "ai",
       };
-    } else if (trimmedLine.startsWith("- Skills:") && currentTask) {
-      const skills = trimmedLine.split(":", 1)[1]?.trim() || "";
-      currentTask.skills = skills ? skills.split(",").map(s => s.trim()) : [];
-    } else if (trimmedLine.startsWith("- Resources:") && currentTask) {
-      const resources = trimmedLine.split(":", 1)[1]?.trim() || "";
-      currentTask.resources = [];
-    } else if (trimmedLine.startsWith("- Time:") && currentTask) {
+    } else if (trimmedLine.startsWith("*   **Skills:**") && currentTask) {
+      const skills = trimmedLine.split("**Skills:**")[1]?.trim() || "";
+      currentTask.skills = skills ? skills.split(",").map((s) => s.trim()) : [];
+    } else if (trimmedLine.startsWith("*   **Resources:**") && currentTask) {
+      const resources = trimmedLine.split("**Resources:**")[1]?.trim() || "";
+      currentTask.resources = resources
+        ? resources.split(",").map((r) => ({ resourceId: r.trim(), amount: 1 }))
+        : [];
+    } else if (trimmedLine.startsWith("*   **Time:**") && currentTask) {
       try {
-        const estimatedDays = parseInt(trimmedLine.split(":", 1)[1]?.trim() || "0", 10);
+        const estimatedDays = parseInt(trimmedLine.split("**Time:**")[1]?.trim() || "0", 10);
         currentTask.estimatedHours = estimatedDays * 8; // Convert days to hours
       } catch (e) {
         currentTask.estimatedHours = 0;
       }
     } else if (trimmedLine && currentTask && !currentTask.description) {
-      // Use this as description if not set
+      // Use this as the description if not set
       currentTask.description = trimmedLine;
     }
   }
-  
+
   // Add the last task
   if (currentTask) {
     tasks.push(currentTask as Omit<Task, 'id' | 'projectId' | 'createdAt' | 'updatedAt'>);
   }
-  
+
   return tasks;
 };
 
@@ -102,7 +69,7 @@ export const generateTasksFromText = async (
 ): Promise<Omit<Task, 'id' | 'projectId' | 'createdAt' | 'updatedAt'>[]> => {
   try {
     // Prepare the prompt based on project category
-    let prompt = `Generate a comprehensive list of tasks for a ${category} project with the following description: "${description}". 
+    const prompt = `Generate a comprehensive list of tasks for a ${category} project with the following description: "${description}". 
     
 For each task, please provide:
 - Task: [Task title]
@@ -113,7 +80,7 @@ For each task, please provide:
 Generate at least 5 tasks that cover the entire project lifecycle.`;
 
     // Call the Gemini API
-    const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + GEMINI_API_KEY, {
+    const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GEMINI_API_KEY, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
