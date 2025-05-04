@@ -1,9 +1,7 @@
-
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { v4 as uuidv4 } from 'uuid';
 import { useAuth } from './AuthContext';
-import { HfInference } from '@huggingface/inference';
 import { updateProjectStatus as updateProjectStatusUtil, deleteProject as deleteProjectUtil } from '@/lib/projectUtils';
 import AIStatusBar from '@/components/ui/AIStatusBar';
 import { initializeAIModels, generateTasksFromText, calculateSkillMatch } from '@/utils/ai';
