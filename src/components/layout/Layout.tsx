@@ -26,10 +26,10 @@ const Layout = ({ children, requiresAuth = false }: LayoutProps) => {
   // Show nothing while checking auth status
   if (loading && requiresAuth) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="mt-4 text-lg text-gray-600">Loading...</p>
+          <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">Loading...</p>
         </div>
       </div>
     );
@@ -52,7 +52,7 @@ const Layout = ({ children, requiresAuth = false }: LayoutProps) => {
       <Header toggleSidebar={showSidebar ? toggleSidebar : undefined} />
       <div className="flex flex-1">
         {showSidebar && <Sidebar isOpen={sidebarOpen} />}
-        <main className={`flex-1 p-6 bg-slate-50 min-h-[calc(100vh-64px)]`}>
+        <main className="flex-1 p-6 bg-slate-50 min-h-[calc(100vh-64px)] dark:bg-slate-900 dark:text-slate-100">
           <div className="container max-w-7xl mx-auto">
             {children}
           </div>

@@ -43,7 +43,7 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
   return (
     <div 
       className={cn(
-        "bg-slate-50 border-r h-screen transition-all duration-300 ease-in-out",
+        "bg-slate-50 border-r h-screen transition-all duration-300 ease-in-out dark:bg-slate-900 dark:border-slate-800",
         isOpen ? "w-64" : "w-[70px]"
       )}
     >
@@ -59,7 +59,7 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
             </div>
           )}
         </div>
-        <Separator />
+        <Separator className="dark:bg-slate-800" />
         <nav className="flex-1 py-4">
           <ul className="space-y-1">
             {links.map((link) => (
@@ -82,8 +82,8 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
           </ul>
         </nav>
         <div className="p-4">
-          <Separator className="mb-4" />
-          <div className="text-xs text-gray-500 text-center">
+          <Separator className="mb-4 dark:bg-slate-800" />
+          <div className="text-xs text-gray-500 text-center dark:text-gray-400">
             {isOpen && "ProPlanAI © 2023"}
           </div>
         </div>
