@@ -27,7 +27,7 @@ const Home = () => {
             <span>AI-Powered Project Management</span>
           </div>
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight gradient-text mb-6">
-            ProPlanAI
+            TaskMaster
           </h1>
           <p className="text-xl md:text-2xl text-slate-600 max-w-3xl mx-auto mb-10">
             Generate tasks, allocate resources, and track project progress with the power of AI
@@ -65,7 +65,7 @@ const Home = () => {
               Supercharge your project management
             </h2>
             <p className="text-lg text-slate-600 max-w-3xl mx-auto">
-              ProPlanAI combines powerful AI capabilities with intuitive project management tools
+              TaskMaster combines powerful AI capabilities with intuitive project management tools
             </p>
           </div>
 
@@ -150,7 +150,7 @@ const Home = () => {
         <div className="max-w-4xl mx-auto bg-primary/80 rounded-xl p-10 text-white text-center">
           <h2 className="text-3xl font-bold mb-4">Ready to transform your project management?</h2>
           <p className="text-lg opacity-90 mb-8 max-w-2xl mx-auto">
-            Join thousands of project managers who are saving time and improving outcomes with ProPlanAI
+            Join thousands of project managers who are saving time and improving outcomes with TaskMaster
           </p>
           <Link to="/login">
             <Button variant="secondary" size="lg">
@@ -167,7 +167,7 @@ const Home = () => {
           <div className="flex flex-col md:flex-row justify-between items-center gap-8">
             <div className="flex items-center">
               <Sparkles className="h-6 w-6 text-primary mr-2" />
-              <span className="text-white font-semibold text-xl">ProPlanAI</span>
+              <span className="text-white font-semibold text-xl">TaskMaster</span>
             </div>
             <div className="flex gap-8">
               <a href="#" className="hover:text-white transition-colors">About</a>
@@ -177,7 +177,7 @@ const Home = () => {
             </div>
           </div>
           <div className="border-t border-slate-800 mt-8 pt-8 text-center">
-            <p>© 2023 ProPlanAI. All rights reserved.</p>
+            <p>© 2023 TaskMaster. All rights reserved.</p>
           </div>
         </div>
       </footer>
