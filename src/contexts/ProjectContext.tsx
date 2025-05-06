@@ -762,4 +762,4 @@ export function useProjects() {
   return context;
 }
 
-export { ProjectContext, updateProjectStatusUtil };
+export { ProjectContext, updateProjectStatusUtil, initialEmployees };

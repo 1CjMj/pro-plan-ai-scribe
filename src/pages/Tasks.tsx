@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useProjects } from '@/contexts/ProjectContext';
+import React, { useState, useEffect } from 'react';
+import { useProjects, initialEmployees } from '@/contexts/ProjectContext';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import {
@@ -32,10 +32,15 @@ import {
 import { TaskStatus } from '@/contexts/ProjectContext';
 
 const Tasks = () => {
-  const { projects, loading, updateTaskStatus } = useProjects();
+  const { projects, loading, updateTaskStatus, assignTask } = useProjects();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<TaskStatus | null>(null);
   const [projectFilter, setProjectFilter] = useState<string | null>(null);
+  
+  const employees = initialEmployees.map(employee => ({
+    id: employee.id,
+    name: employee.name,
+  }));
   
   // Flatten all tasks from all projects
   const allTasks = projects.flatMap(project => 
@@ -74,6 +79,13 @@ const Tasks = () => {
   
   const handleChangeTaskStatus = async (taskId: string, projectId: string, status: TaskStatus) => {
     await updateTaskStatus(taskId, projectId, status);
+  };
+
+  const handleChangeAssignee = async (taskId: string, projectId: string, assigneeId: string) => {
+    const employee = employees.find(emp => emp.id === assigneeId);
+    if (employee) {
+      await assignTask(taskId, projectId, assigneeId, employee.name);
+    }
   };
   
   // Function to count tasks by status
@@ -241,9 +253,23 @@ const Tasks = () => {
                       {getTaskStatusBadge(task.status)}
                     </TableCell>
                     <TableCell>
-                      {task.assignedToName || (
-                        <span className="text-muted-foreground text-sm">Unassigned</span>
-                      )}
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="sm">
+                            {task.assignedToName || 'Unassigned'}
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          {employees.map(employee => (
+                            <DropdownMenuItem
+                              key={employee.id}
+                              onClick={() => handleChangeAssignee(task.id, task.projectId, employee.id)}
+                            >
+                              {employee.name}
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
@@ -287,6 +313,23 @@ const Tasks = () => {
                               <CheckCircle2 className="mr-2 h-4 w-4" />
                               Completed
                             </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              Reassign Task
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            {employees.map(employee => (
+                              <DropdownMenuItem
+                                key={employee.id}
+                                onClick={() => handleChangeAssignee(task.id, task.projectId, employee.id)}
+                              >
+                                {employee.name}
+                              </DropdownMenuItem>
+                            ))}
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </div>
