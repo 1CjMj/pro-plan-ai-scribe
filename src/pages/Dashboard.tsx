@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useProjects } from '@/contexts/ProjectContext';
 import { Link } from 'react-router-dom';
@@ -30,12 +29,46 @@ const ManagerDashboard = () => {
   let completedTasks = 0;
   let inProgressTasks = 0;
   let notStartedTasks = 0;
+  let unassignedTasks = 0;
+  let upcomingDeadlines = 0;
+  let recentlyCompletedTasks = 0;
+
+  // Today's date and date 48 hours from now for deadline calculations
+  const today = new Date();
+  const in48Hours = new Date(today);
+  in48Hours.setHours(today.getHours() + 48);
 
   projects.forEach(project => {
     totalTasks += project.tasks.length;
     completedTasks += project.tasks.filter(t => t.status === 'completed').length;
     inProgressTasks += project.tasks.filter(t => t.status === 'in-progress').length;
     notStartedTasks += project.tasks.filter(t => t.status === 'not-started').length;
+    
+    // Count unassigned tasks
+    unassignedTasks += project.tasks.filter(t => !t.assignedTo).length;
+    
+    // Count tasks with upcoming deadlines (within 48 hours)
+    project.tasks.forEach(task => {
+      if (task.endDate) {
+        const endDate = new Date(task.endDate);
+        if (endDate > today && endDate < in48Hours) {
+          upcomingDeadlines++;
+        }
+      }
+    });
+    
+    // Count recently completed tasks (completed within the last 7 days)
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    
+    project.tasks.forEach(task => {
+      if (task.status === 'completed' && task.updatedAt) {
+        const updatedDate = new Date(task.updatedAt);
+        if (updatedDate >= sevenDaysAgo) {
+          recentlyCompletedTasks++;
+        }
+      }
+    });
   });
   
   const taskCompletionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
@@ -203,7 +236,7 @@ const ManagerDashboard = () => {
               <AlertTriangle className="h-5 w-5 text-amber-500 mt-0.5" />
               <div>
                 <h4 className="font-medium">Unassigned Tasks</h4>
-                <p className="text-sm text-muted-foreground">3 tasks have not been assigned yet</p>
+                <p className="text-sm text-muted-foreground">{unassignedTasks} tasks have not been assigned yet</p>
                 <Link to="/tasks" className="text-sm text-primary hover:underline block mt-1">
                   Review tasks
                 </Link>
@@ -214,7 +247,7 @@ const ManagerDashboard = () => {
               <Clock className="h-5 w-5 text-blue-500 mt-0.5" />
               <div>
                 <h4 className="font-medium">Upcoming Deadlines</h4>
-                <p className="text-sm text-muted-foreground">2 tasks due in the next 48 hours</p>
+                <p className="text-sm text-muted-foreground">{upcomingDeadlines} tasks due in the next 48 hours</p>
                 <Link to="/tasks" className="text-sm text-primary hover:underline block mt-1">
                   Review deadlines
                 </Link>
@@ -225,7 +258,7 @@ const ManagerDashboard = () => {
               <CheckCircle2 className="h-5 w-5 text-green-500 mt-0.5" />
               <div>
                 <h4 className="font-medium">Tasks Ready for Review</h4>
-                <p className="text-sm text-muted-foreground">5 tasks recently marked as completed</p>
+                <p className="text-sm text-muted-foreground">{recentlyCompletedTasks} tasks recently marked as completed</p>
                 <Link to="/tasks" className="text-sm text-primary hover:underline block mt-1">
                   Review completed tasks
                 </Link>
