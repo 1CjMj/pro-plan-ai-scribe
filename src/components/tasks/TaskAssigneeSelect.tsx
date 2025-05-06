@@ -25,13 +25,22 @@ const TaskAssigneeSelect = ({ currentAssigneeId, onAssign, disabled = false }: T
     
     setIsAssigning(true);
     try {
-      const employee = initialEmployees.find(emp => emp.id === userId);
-      if (employee) {
-        await onAssign(userId, employee.name);
+      // Handle the special "unassigned" case
+      if (userId === "unassigned") {
+        await onAssign("", "");
         toast({
-          title: "Task reassigned",
-          description: `Task has been reassigned to ${employee.name}`,
+          title: "Task unassigned",
+          description: "Task has been unassigned",
         });
+      } else {
+        const employee = initialEmployees.find(emp => emp.id === userId);
+        if (employee) {
+          await onAssign(userId, employee.name);
+          toast({
+            title: "Task reassigned",
+            description: `Task has been reassigned to ${employee.name}`,
+          });
+        }
       }
     } catch (error) {
       toast({
@@ -52,14 +61,14 @@ const TaskAssigneeSelect = ({ currentAssigneeId, onAssign, disabled = false }: T
   return (
     <Select 
       disabled={disabled || isAssigning}
-      value={currentAssigneeId || ""} 
+      value={currentAssigneeId || "unassigned"} 
       onValueChange={handleAssigneeChange}
     >
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="Assign to..." />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="">Unassigned</SelectItem>
+        <SelectItem value="unassigned">Unassigned</SelectItem>
         {initialEmployees.map((employee) => (
           <SelectItem key={employee.id} value={employee.id}>
             {employee.name}
