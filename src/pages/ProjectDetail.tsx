@@ -279,12 +279,15 @@ const ProjectDetail = () => {
   const [isGeneratingTasks, setIsGeneratingTasks] = useState(false);
   const [isAutoAssigning, setIsAutoAssigning] = useState(false);
   const { toast } = useToast();
+  const [status, setStatus] = useState('planning');
+  const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
   
   useEffect(() => {
     if (id) {
       const fetchedProject = getProjectById(id);
       if (fetchedProject) {
         setProject(fetchedProject);
+        setStatus(fetchedProject.status);
       } else {
         navigate('/projects', { replace: true });
       }
@@ -302,13 +305,14 @@ const ProjectDetail = () => {
     );
   }
   
-  const handleStatusChange = async (status: ProjectStatus) => {
-    await updateProject(project.id, { status });
-    setProject({ ...project, status });
+  const handleStatusChange = async (newStatus: ProjectStatus) => {
+    setStatus(newStatus);
+    await updateProject(project.id, { status: newStatus });
+    setProject({ ...project, status: newStatus });
     
     toast({
       title: "Status updated",
-      description: `Project status changed to ${status}`,
+      description: `Project status changed to ${newStatus}`,
     });
   };
   
@@ -392,13 +396,13 @@ const ProjectDetail = () => {
   const getTaskStatusBadge = (status: string) => {
     switch (status) {
       case 'not-started': 
-        return <Badge variant="outline" className="bg-gray-100">Not Started</Badge>;
+        return <Badge className="bg-blue-700 border border-blue-300">Not Started</Badge>;
       case 'in-progress': 
         return <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100">In Progress</Badge>;
       case 'completed': 
         return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Completed</Badge>;
       default:
-        return <Badge variant="outline">Unknown</Badge>;
+        return <Badge>Unknown</Badge>;
     }
   };
 
@@ -491,6 +495,44 @@ const ProjectDetail = () => {
           </div>
         </div>
         
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold">Update Status</h2>
+          <Select value={status} onValueChange={handleStatusChange}>
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Select status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="planning">Planning</SelectItem>
+              <SelectItem value="in-progress">In Progress</SelectItem>
+              <SelectItem value="completed">Completed</SelectItem>
+              <SelectItem value="on-hold">On Hold</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold">Delete Project</h2>
+          <Dialog open={isDeleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="destructive">Delete Project</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Are you sure?</DialogTitle>
+              </DialogHeader>
+              <p>This action cannot be undone. This will permanently delete the project.</p>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button variant="destructive" onClick={handleDeleteProject}>
+                  Delete
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+
         <div className="grid gap-6 md:grid-cols-3">
           <Card className="md:col-span-2">
             <CardHeader>
@@ -697,12 +739,12 @@ const ProjectDetail = () => {
                           <TableCell>
                             <div className="flex flex-wrap gap-1">
                               {task.skills.slice(0, 2).map((skill: string, index: number) => (
-                                <Badge key={index} variant="outline" className="bg-slate-50">
+                                <Badge key={index} className="bg-blue-700 border border-gray-300">
                                   {skill}
                                 </Badge>
                               ))}
                               {task.skills.length > 2 && (
-                                <Badge variant="outline" className="bg-slate-50">
+                                <Badge className="bg-blue-700">
                                   +{task.skills.length - 2}
                                 </Badge>
                               )}
@@ -792,12 +834,12 @@ const ProjectDetail = () => {
                             <TableCell>
                               <div className="flex flex-wrap gap-1">
                                 {task.skills.slice(0, 2).map((skill: string, index: number) => (
-                                  <Badge key={index} variant="outline" className="bg-slate-50">
+                                  <Badge key={index} className="bg-slate-50">
                                     {skill}
                                   </Badge>
                                 ))}
                                 {task.skills.length > 2 && (
-                                  <Badge variant="outline" className="bg-slate-50">
+                                  <Badge className="bg-slate-50">
                                     +{task.skills.length - 2}
                                   </Badge>
                                 )}
@@ -866,12 +908,12 @@ const ProjectDetail = () => {
                             <TableCell>
                               <div className="flex flex-wrap gap-1">
                                 {task.skills.slice(0, 2).map((skill: string, index: number) => (
-                                  <Badge key={index} variant="outline" className="bg-slate-50">
+                                  <Badge key={index} className="bg-slate-50">
                                     {skill}
                                   </Badge>
                                 ))}
                                 {task.skills.length > 2 && (
-                                  <Badge variant="outline" className="bg-slate-50">
+                                  <Badge className="bg-slate-50">
                                     +{task.skills.length - 2}
                                   </Badge>
                                 )}
@@ -940,12 +982,12 @@ const ProjectDetail = () => {
                             <TableCell>
                               <div className="flex flex-wrap gap-1">
                                 {task.skills.slice(0, 2).map((skill: string, index: number) => (
-                                  <Badge key={index} variant="outline" className="bg-slate-50">
+                                  <Badge key={index} className="bg-slate-50">
                                     {skill}
                                   </Badge>
                                 ))}
                                 {task.skills.length > 2 && (
-                                  <Badge variant="outline" className="bg-slate-50">
+                                  <Badge className="bg-slate-50">
                                     +{task.skills.length - 2}
                                   </Badge>
                                 )}
