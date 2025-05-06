@@ -581,27 +581,60 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
+    // Create employee workload map
+    const employeeWorkload = new Map<string, number>();
+    
+    // Count current task assignments for each employee
+    projects.forEach(p => {
+      p.tasks.forEach(t => {
+        if (t.assignedTo) {
+          employeeWorkload.set(
+            t.assignedTo, 
+            (employeeWorkload.get(t.assignedTo) || 0) + 1
+          );
+        }
+      });
+    });
+
     const updatedTasks = await Promise.all(
       project.tasks.map(async task => {
         if (task.assignedTo) return task; // Skip already assigned tasks
 
-        // Find the best match employee based on skills
-        let bestMatch = null;
-        let bestMatchScore = 0;
+        // Sort employees by skill match and workload
+        const rankedEmployees = await Promise.all(
+          initialEmployees.map(async employee => {
+            const skillMatchScore = await calculateSkillMatch(task.skills, employee.skills);
+            const currentWorkload = employeeWorkload.get(employee.id) || 0;
+            
+            // Calculate score - higher skill match and lower workload is better
+            const workloadFactor = 1 / (1 + (currentWorkload * 0.2)); // Penalize employees with more tasks
+            const finalScore = skillMatchScore * workloadFactor;
+            
+            return {
+              employee,
+              skillMatchScore,
+              workload: currentWorkload,
+              finalScore
+            };
+          })
+        );
 
-        for (const employee of initialEmployees) {
-          const matchScore = await calculateSkillMatch(task.skills, employee.skills); // Await the promise
-          if (matchScore > bestMatchScore) {
-            bestMatch = employee;
-            bestMatchScore = matchScore;
-          }
-        }
+        // Sort by final score (descending)
+        rankedEmployees.sort((a, b) => b.finalScore - a.finalScore);
 
-        if (bestMatch && bestMatchScore >= 0.5) {
+        // Select the best employee if they meet minimum threshold
+        const bestMatch = rankedEmployees[0];
+        if (bestMatch && bestMatch.finalScore >= 0.3) {
+          // Update the workload for this employee
+          employeeWorkload.set(
+            bestMatch.employee.id,
+            (employeeWorkload.get(bestMatch.employee.id) || 0) + 1
+          );
+          
           return {
             ...task,
-            assignedTo: bestMatch.id,
-            assignedToName: bestMatch.name,
+            assignedTo: bestMatch.employee.id,
+            assignedToName: bestMatch.employee.name,
             updatedAt: new Date().toISOString(),
           };
         }
@@ -618,7 +651,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
 
     toast({
       title: "Tasks Assigned",
-      description: "Tasks have been automatically assigned based on skills.",
+      description: "Tasks have been automatically assigned based on skills and workload balance.",
     });
   };
 

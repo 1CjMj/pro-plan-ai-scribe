@@ -103,6 +103,7 @@ const TasksTable: React.FC<TasksTableProps> = ({ tasks, showProject = false }) =
                   <TableCell className="text-right">
                     <TaskAssigneeSelect
                       currentAssigneeId={task.assignedTo}
+                      taskSkills={task.skills}
                       onAssign={(userId, userName) => 
                         handleAssignTask(task.id, task.projectId, userId, userName)
                       }
