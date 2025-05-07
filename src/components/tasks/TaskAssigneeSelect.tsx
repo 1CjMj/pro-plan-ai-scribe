@@ -7,9 +7,9 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/components/ui/select';
-import { initialEmployees } from '@/contexts/ProjectContext';
 import { useToast } from '@/components/ui/use-toast';
 import { calculateSkillMatch } from '@/utils/ai';
+import { getWorkers } from '@/utils/workerUtils';
 
 interface TaskAssigneeSelectProps {
   currentAssigneeId?: string;
@@ -27,17 +27,20 @@ const TaskAssigneeSelect = ({
   const { toast } = useToast();
   const [isAssigning, setIsAssigning] = useState(false);
   
+  // Get workers
+  const workers = getWorkers();
+  
   // Generate recommendation scores for employees based on skills and workload
   const rankedEmployees = useMemo(() => {
     // Function to count tasks per employee
     const getEmployeeTaskCount = (employeeId: string): number => {
       // This is a simplified approach, ideally we'd get this from context
-      return initialEmployees.reduce((count, emp) => 
+      return workers.reduce((count, emp) => 
         emp.id === employeeId ? count + 1 : count, 0);
     };
 
     // Create a copy of employees with scores
-    return [...initialEmployees].map(employee => {
+    return [...workers].map(employee => {
       const taskCount = getEmployeeTaskCount(employee.id);
       const workloadFactor = 1 / (1 + (taskCount * 0.2)); // Penalize employees with more tasks
       
@@ -58,7 +61,7 @@ const TaskAssigneeSelect = ({
         score: hasMatchingSkills ? workloadFactor * 1.5 : workloadFactor
       };
     }).sort((a, b) => b.score - a.score); // Sort by score descending
-  }, [taskSkills]);
+  }, [taskSkills, workers]);
 
   const handleAssigneeChange = async (userId: string) => {
     if (userId === currentAssigneeId) return;
@@ -73,7 +76,7 @@ const TaskAssigneeSelect = ({
           description: "Task has been unassigned",
         });
       } else {
-        const employee = initialEmployees.find(emp => emp.id === userId);
+        const employee = workers.find(emp => emp.id === userId);
         if (employee) {
           await onAssign(userId, employee.name);
           toast({
@@ -95,7 +98,7 @@ const TaskAssigneeSelect = ({
   
   // Get the current assignee name
   const currentAssigneeName = currentAssigneeId 
-    ? initialEmployees.find(emp => emp.id === currentAssigneeId)?.name || "Unknown"
+    ? workers.find(emp => emp.id === currentAssigneeId)?.name || "Unknown"
     : "Unassigned";
   
   return (

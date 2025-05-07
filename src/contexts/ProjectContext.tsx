@@ -5,6 +5,7 @@ import { useAuth } from './AuthContext';
 import { updateProjectStatus as updateProjectStatusUtil, deleteProject as deleteProjectUtil } from '@/lib/projectUtils';
 import AIStatusBar from '@/components/ui/AIStatusBar';
 import { generateTasksFromText, calculateSkillMatch } from '@/utils/ai';
+import { getWorkers, Worker } from '@/utils/workerUtils';
 
 // Define project-related types
 export type ProjectStatus = 'planning' | 'in-progress' | 'completed' | 'on-hold';
@@ -147,194 +148,6 @@ const initialProjects: Project[] = [
   }
 ];
 
-// Combine mock employees from Employees.tsx and existing ones
-const initialEmployees = [
-  // Employees from Employees.tsx
-  {
-    id: "user-001",
-    name: "Aaron Edwards",
-    email: "aaron.edwards@example.com",
-    role: "frontend developer",
-    skills: ["React", "JavaScript", "CSS", "HTML", "TailwindCSS", "UI Design", "Wireframing", "Visual Design"],
-  },
-  {
-    id: "user-002",
-    name: "James Meyer",
-    email: "james.meyer@example.com",
-    role: "backend developer",
-    skills: ["Node.js", "Express", "SQL", "MongoDB", "Docker", "Database", "Systems Integration", "DevOps"],
-  },
-  {
-    id: "user-003",
-    name: "Stacy Blankenship",
-    email: "stacy.blankenship@example.com",
-    role: "ai developer",
-    skills: ["Python", "TensorFlow", "PyTorch", "Machine Learning", "Data Analysis", "Research", "User Analysis"],
-  },
-  {
-    id: "user-004",
-    name: "Phillip Roberts",
-    email: "phillip.roberts@example.com",
-    role: "frontend developer",
-    skills: ["Vue.js", "JavaScript", "CSS", "HTML", "Bootstrap", "UI Design", "Wireframing"],
-  },
-  {
-    id: "user-005",
-    name: "Ann Hill",
-    email: "ann.hill@example.com",
-    role: "backend developer",
-    skills: ["Ruby on Rails", "PostgreSQL", "Redis", "API Development", "Authentication", "Systems Integration", "Execution"],
-  },
-  {
-    id: "user-006",
-    name: "Brett Hayes",
-    email: "brett.hayes@example.com",
-    role: "ai developer",
-    skills: ["Natural Language Processing", "Computer Vision", "Python", "Keras", "Data Engineering", "Research", "Planning"],
-  },
-  {
-    id: "user-007",
-    name: "Robert Alexander",
-    email: "robert.alexander@example.com",
-    role: "frontend developer",
-    skills: ["Angular", "TypeScript", "SCSS", "HTML", "RxJS", "UI Design", "Communication"],
-  },
-  {
-    id: "user-008",
-    name: "Michael Strickland",
-    email: "michael.strickland@example.com",
-    role: "backend developer",
-    skills: ["Java", "Spring Boot", "MySQL", "Kubernetes", "Microservices", "CI/CD", "DevOps"],
-  },
-  {
-    id: "user-009",
-    name: "Samantha Robinson",
-    email: "samantha.robinson@example.com",
-    role: "ai developer",
-    skills: ["Deep Learning", "Python", "Scikit-learn", "Data Visualization", "Big Data", "Research", "User Analysis"],
-  },
-  {
-    id: "user-010",
-    name: "Kenneth Anderson",
-    email: "kenneth.anderson@example.com",
-    role: "frontend developer",
-    skills: ["Svelte", "JavaScript", "CSS", "HTML", "GraphQL", "UI Design", "Wireframing"],
-  },
-  {
-    id: "user-011",
-    name: "Emily Carter",
-    email: "emily.carter@example.com",
-    role: "backend developer",
-    skills: ["Go", "gRPC", "PostgreSQL", "Docker", "Cloud Infrastructure", "Systems Integration", "Execution"],
-  },
-  {
-    id: "user-012",
-    name: "Daniel Thompson",
-    email: "daniel.thompson@example.com",
-    role: "ai developer",
-    skills: ["Reinforcement Learning", "Python", "OpenAI Gym", "Data Preprocessing", "AI Ethics", "Research", "Planning"],
-  },
-  {
-    id: "user-013",
-    name: "Sophia Martinez",
-    email: "sophia.martinez@example.com",
-    role: "frontend developer",
-    skills: ["React", "Next.js", "CSS Modules", "HTML", "Webpack", "UI Design", "Communication"],
-  },
-  {
-    id: "user-014",
-    name: "Ethan Brooks",
-    email: "ethan.brooks@example.com",
-    role: "backend developer",
-    skills: ["C#", ".NET Core", "SQL Server", "Azure", "API Design", "Systems Integration", "Execution"],
-  },
-  {
-    id: "user-015",
-    name: "Olivia Johnson",
-    email: "olivia.johnson@example.com",
-    role: "ai developer",
-    skills: ["Generative AI", "Python", "GANs", "Data Augmentation", "AI Model Optimization", "Research", "Planning"],
-  },
-  {
-    id: "user-016",
-    name: "Laura Bennett",
-    email: "laura.bennett@example.com",
-    role: "project manager",
-    skills: ["Project Planning", "Team Coordination", "Risk Management", "Agile Methodologies", "Scrum", "Organization", "Execution"],
-  },
-  {
-    id: "user-017",
-    name: "Mark Peterson",
-    email: "mark.peterson@example.com",
-    role: "qa engineer",
-    skills: ["Testing", "Automation", "Integration", "Bug Tracking", "Regression Testing", "Quality Assurance", "Execution"],
-  },
-  {
-    id: "user-018",
-    name: "Sarah Collins",
-    email: "sarah.collins@example.com",
-    role: "project manager",
-    skills: ["Organization", "Resource Allocation", "Stakeholder Communication", "Budget Management", "Project Documentation", "Planning", "Execution"],
-  },
-  {
-    id: "user-019",
-    name: "Tom Harris",
-    email: "tom.harris@example.com",
-    role: "qa engineer",
-    skills: ["Manual Testing", "Performance Testing", "Test Case Design", "API Testing", "Load Testing", "Quality Assurance", "Execution"],
-  },
-  {
-    id: "user-020",
-    name: "Jessica Wright",
-    email: "jessica.wright@example.com",
-    role: "project manager",
-    skills: ["Strategic Planning", "Change Management", "Process Improvement", "Leadership", "Cross-functional Collaboration", "Organization", "Execution"],
-  },
-  // Existing employees (IDs amended)
-  {
-    id: "user-021",
-    name: "Jane Worker",
-    skills: ["React", "JavaScript", "UI Design", "Content Writing", "Frontend Development"],
-  },
-  {
-    id: "user-022",
-    name: "Bob Developer",
-    skills: ["Backend Development", "API Design", "Database Design", "SQL", "DevOps"],
-  },
-  {
-    id: "user-023",
-    name: "Alice Designer",
-    skills: ["UI/UX Design", "Graphic Design", "Visual Design", "Art Direction", "Brand Strategy"],
-  },
-  {
-    id: "user-024",
-    name: "Charlie Manager",
-    skills: ["Project Management", "Communication", "Risk Management", "Strategic Planning", "Presentation"],
-  },
-];
-
-const loadDefaultEmployees = async () => {
-  try {
-    const response = await fetch('/backend/employees.json');
-    if (!response.ok) {
-      throw new Error('Failed to fetch employees.json');
-    }
-    const employees = await response.json();
-    return employees;
-  } catch (error) {
-    console.error('Error loading default employees:', error);
-    return [];
-  }
-};
-
-const createEmployeeAccounts = (employees) => {
-  employees.forEach(employee => {
-    // Mock account creation logic
-    console.log(`Creating account for ${employee.name} (${employee.email})`);
-    // Add logic to save accounts to a database or state
-  });
-};
-
 export function ProjectProvider({ children }: { children: React.ReactNode }) {
   const [projects, setProjects] = useState<Project[]>([]);
   const [resources, setResources] = useState<Resource[]>([]);
@@ -343,15 +156,6 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
   const [aiError, setAIError] = useState<string | null>(null);
   const { toast } = useToast();
   const { currentUser } = useAuth();
-
-  useEffect(() => {
-    const initializeEmployees = async () => {
-      const employees = await loadDefaultEmployees();
-      createEmployeeAccounts(employees);
-    };
-
-    initializeEmployees();
-  }, []);
 
   useEffect(() => {
     const loadAIModels = async () => {
@@ -571,6 +375,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
 
   const autoAssignTasks = async (projectId: string) => {
     const project = projects.find(p => p.id === projectId);
+    const workers = getWorkers(); // Get workers from our utility
 
     if (!project) {
       toast({
@@ -602,7 +407,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
 
         // Sort employees by skill match and workload
         const rankedEmployees = await Promise.all(
-          initialEmployees.map(async employee => {
+          workers.map(async employee => {
             const skillMatchScore = await calculateSkillMatch(task.skills, employee.skills);
             const currentWorkload = employeeWorkload.get(employee.id) || 0;
             
@@ -736,15 +541,34 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
   
   const importEmployeesFromFile = async (data: any) => {
     try {
-      const newEmployees = data.map(employee => ({
-        ...employee,
-        id: `user-${Math.random().toString(36).substr(2, 9)}` // Generate unique ID
+      const { addWorker } = await import('@/utils/workerUtils');
+      
+      // Convert the incoming data to the Worker format
+      const newWorkers = data.map(employee => ({
+        name: employee.name,
+        email: employee.email,
+        role: employee.role,
+        skills: employee.skills || []
       }));
-
-      createEmployeeAccounts(newEmployees);
-      console.log('Imported employees:', newEmployees);
+      
+      // Add each worker
+      newWorkers.forEach(worker => {
+        addWorker(worker);
+      });
+      
+      toast({
+        title: "Employees imported",
+        description: `${newWorkers.length} employees have been imported successfully.`,
+      });
+      
     } catch (error) {
       console.error('Error importing employees:', error);
+      
+      toast({
+        title: "Import failed",
+        description: "There was an error importing the employees.",
+        variant: "destructive",
+      });
     }
   };
   
@@ -795,4 +619,4 @@ export function useProjects() {
   return context;
 }
 
-export { ProjectContext, updateProjectStatusUtil, initialEmployees };
+export { ProjectContext, updateProjectStatusUtil };

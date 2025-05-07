@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import {
@@ -38,170 +39,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useProjects } from '@/contexts/ProjectContext';
-
-// Mock employee data
-const employees = [
-  {
-    id: "user-001",
-    name: "Aaron Edwards",
-    email: "aaron.edwards@example.com",
-    role: "frontend developer",
-    skills: ["React", "JavaScript", "CSS", "HTML", "TailwindCSS", "UI Design", "Wireframing", "Visual Design"],
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Aaron",
-  },
-  {
-    id: "user-002",
-    name: "James Meyer",
-    email: "james.meyer@example.com",
-    role: "backend developer",
-    skills: ["Node.js", "Express", "SQL", "MongoDB", "Docker", "Database", "Systems Integration", "DevOps"],
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=James",
-  },
-  {
-    id: "user-003",
-    name: "Stacy Blankenship",
-    email: "stacy.blankenship@example.com",
-    role: "ai developer",
-    skills: ["Python", "TensorFlow", "PyTorch", "Machine Learning", "Data Analysis", "Research", "User Analysis"],
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Stacy",
-  },
-  {
-    id: "user-004",
-    name: "Phillip Roberts",
-    email: "phillip.roberts@example.com",
-    role: "frontend developer",
-    skills: ["Vue.js", "JavaScript", "CSS", "HTML", "Bootstrap", "UI Design", "Wireframing"],
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Phillip",
-  },
-  {
-    id: "user-005",
-    name: "Ann Hill",
-    email: "ann.hill@example.com",
-    role: "backend developer",
-    skills: ["Ruby on Rails", "PostgreSQL", "Redis", "API Development", "Authentication", "Systems Integration", "Execution"],
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ann",
-  },
-  {
-    id: "user-006",
-    name: "Brett Hayes",
-    email: "brett.hayes@example.com",
-    role: "ai developer",
-    skills: ["Natural Language Processing", "Computer Vision", "Python", "Keras", "Data Engineering", "Research", "Planning"],
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Brett",
-  },
-  {
-    id: "user-007",
-    name: "Robert Alexander",
-    email: "robert.alexander@example.com",
-    role: "frontend developer",
-    skills: ["Angular", "TypeScript", "SCSS", "HTML", "RxJS", "UI Design", "Communication"],
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Robert",
-  },
-  {
-    id: "user-008",
-    name: "Michael Strickland",
-    email: "michael.strickland@example.com",
-    role: "backend developer",
-    skills: ["Java", "Spring Boot", "MySQL", "Kubernetes", "Microservices", "CI/CD", "DevOps"],
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
-  },
-  {
-    id: "user-009",
-    name: "Samantha Robinson",
-    email: "samantha.robinson@example.com",
-    role: "ai developer",
-    skills: ["Deep Learning", "Python", "Scikit-learn", "Data Visualization", "Big Data", "Research", "User Analysis"],
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Samantha",
-  },
-  {
-    id: "user-010",
-    name: "Kenneth Anderson",
-    email: "kenneth.anderson@example.com",
-    role: "frontend developer",
-    skills: ["Svelte", "JavaScript", "CSS", "HTML", "GraphQL", "UI Design", "Wireframing"],
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Kenneth",
-  },
-  {
-    id: "user-011",
-    name: "Emily Carter",
-    email: "emily.carter@example.com",
-    role: "backend developer",
-    skills: ["Go", "gRPC", "PostgreSQL", "Docker", "Cloud Infrastructure", "Systems Integration", "Execution"],
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emily",
-  },
-  {
-    id: "user-012",
-    name: "Daniel Thompson",
-    email: "daniel.thompson@example.com",
-    role: "ai developer",
-    skills: ["Reinforcement Learning", "Python", "OpenAI Gym", "Data Preprocessing", "AI Ethics", "Research", "Planning"],
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Daniel",
-  },
-  {
-    id: "user-013",
-    name: "Sophia Martinez",
-    email: "sophia.martinez@example.com",
-    role: "frontend developer",
-    skills: ["React", "Next.js", "CSS Modules", "HTML", "Webpack", "UI Design", "Communication"],
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sophia",
-  },
-  {
-    id: "user-014",
-    name: "Ethan Brooks",
-    email: "ethan.brooks@example.com",
-    role: "backend developer",
-    skills: ["C#", ".NET Core", "SQL Server", "Azure", "API Design", "Systems Integration", "Execution"],
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ethan",
-  },
-  {
-    id: "user-015",
-    name: "Olivia Johnson",
-    email: "olivia.johnson@example.com",
-    role: "ai developer",
-    skills: ["Generative AI", "Python", "GANs", "Data Augmentation", "AI Model Optimization", "Research", "Planning"],
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Olivia",
-  },
-  {
-    id: "user-016",
-    name: "Laura Bennett",
-    email: "laura.bennett@example.com",
-    role: "project manager",
-    skills: ["Project Planning", "Team Coordination", "Risk Management", "Agile Methodologies", "Scrum", "Organization", "Execution"],
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Laura",
-  },
-  {
-    id: "user-017",
-    name: "Mark Peterson",
-    email: "mark.peterson@example.com",
-    role: "qa engineer",
-    skills: ["Testing", "Automation", "Integration", "Bug Tracking", "Regression Testing", "Quality Assurance", "Execution"],
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mark",
-  },
-  {
-    id: "user-018",
-    name: "Sarah Collins",
-    email: "sarah.collins@example.com",
-    role: "project manager",
-    skills: ["Organization", "Resource Allocation", "Stakeholder Communication", "Budget Management", "Project Documentation", "Planning", "Execution"],
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
-  },
-  {
-    id: "user-019",
-    name: "Tom Harris",
-    email: "tom.harris@example.com",
-    role: "qa engineer",
-    skills: ["Manual Testing", "Performance Testing", "Test Case Design", "API Testing", "Load Testing", "Quality Assurance", "Execution"],
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Tom",
-  },
-  {
-    id: "user-020",
-    name: "Jessica Wright",
-    email: "jessica.wright@example.com",
-    role: "project manager",
-    skills: ["Strategic Planning", "Change Management", "Process Improvement", "Leadership", "Cross-functional Collaboration", "Organization", "Execution"],
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jessica",
-  },
-];
+import { getWorkers, addWorker, Worker } from '@/utils/workerUtils';
 
 const ImportEmployeesDialog = ({ 
   open, 
@@ -309,9 +147,11 @@ const ImportEmployeesDialog = ({
 const NewEmployeeDialog = ({
   open,
   onOpenChange,
+  onAddEmployee,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onAddEmployee: () => void;
 }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -320,10 +160,24 @@ const NewEmployeeDialog = ({
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onOpenChange(false);
     
-    // In a real app, this would create a new employee
-    console.log('New employee:', { name, email, role, skills: skills.split(',').map(s => s.trim()) });
+    // Add the new employee
+    addWorker({
+      name,
+      email,
+      role,
+      skills: skills.split(',').map(s => s.trim()),
+    });
+    
+    // Reset the form
+    setName('');
+    setEmail('');
+    setRole('');
+    setSkills('');
+    
+    // Close the dialog and refresh the list
+    onOpenChange(false);
+    onAddEmployee();
   };
   
   return (
@@ -401,14 +255,44 @@ const Employees = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [importDialogOpen, setImportDialogOpen] = useState(false);
   const [newEmployeeDialogOpen, setNewEmployeeDialogOpen] = useState(false);
+  const [employees, setEmployees] = useState<Worker[]>([]);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  
+  // Load employees
+  useEffect(() => {
+    setEmployees(getWorkers());
+  }, [refreshTrigger]);
+  
+  // Handle refresh after adding new employee
+  const handleEmployeeAdded = () => {
+    setRefreshTrigger(prev => prev + 1);
+  };
   
   // Filter employees based on search term
   const filteredEmployees = employees.filter(employee =>
     employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    employee.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    employee.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (employee.email && employee.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (employee.role && employee.role.toLowerCase().includes(searchTerm.toLowerCase())) ||
     employee.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()))
   );
+  
+  // Handle export employees
+  const handleExportEmployees = () => {
+    try {
+      const dataStr = JSON.stringify(employees, null, 2);
+      const dataUri = `data:application/json;charset=utf-8,${encodeURIComponent(dataStr)}`;
+      
+      const exportFileDefaultName = 'employees.json';
+      
+      const linkElement = document.createElement('a');
+      linkElement.setAttribute('href', dataUri);
+      linkElement.setAttribute('download', exportFileDefaultName);
+      linkElement.click();
+    } catch (error) {
+      console.error('Error exporting employees:', error);
+      alert('Failed to export employees');
+    }
+  };
   
   return (
     <Layout requiresAuth>
@@ -487,7 +371,7 @@ const Employees = () => {
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell>{employee.role}</TableCell>
+                      <TableCell>{employee.role || "Not specified"}</TableCell>
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
                           {employee.skills.slice(0, 3).map((skill, index) => (
@@ -502,7 +386,7 @@ const Employees = () => {
                           )}
                         </div>
                       </TableCell>
-                      <TableCell>{employee.email}</TableCell>
+                      <TableCell>{employee.email || "Not provided"}</TableCell>
                     </TableRow>
                   ))
                 )}
@@ -513,7 +397,7 @@ const Employees = () => {
             <p className="text-sm text-muted-foreground">
               Showing {filteredEmployees.length} of {employees.length} employees
             </p>
-            <Button variant="outline">
+            <Button variant="outline" onClick={handleExportEmployees}>
               <Download className="mr-2 h-4 w-4" />
               Export List
             </Button>
@@ -521,8 +405,15 @@ const Employees = () => {
         </Card>
       </div>
       
-      <ImportEmployeesDialog open={importDialogOpen} onOpenChange={setImportDialogOpen} />
-      <NewEmployeeDialog open={newEmployeeDialogOpen} onOpenChange={setNewEmployeeDialogOpen} />
+      <ImportEmployeesDialog 
+        open={importDialogOpen} 
+        onOpenChange={setImportDialogOpen} 
+      />
+      <NewEmployeeDialog 
+        open={newEmployeeDialogOpen} 
+        onOpenChange={setNewEmployeeDialogOpen}
+        onAddEmployee={handleEmployeeAdded}
+      />
     </Layout>
   );
 };
