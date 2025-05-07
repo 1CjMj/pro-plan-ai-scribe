@@ -405,31 +405,57 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       project.tasks.map(async task => {
         if (task.assignedTo) return task; // Skip already assigned tasks
 
-        // Sort employees by skill match and workload
-        const rankedEmployees = await Promise.all(
-          workers.map(async employee => {
-            const skillMatchScore = await calculateSkillMatch(task.skills, employee.skills);
-            const currentWorkload = employeeWorkload.get(employee.id) || 0;
-            
-            // Calculate score - higher skill match and lower workload is better
-            const workloadFactor = 1 / (1 + (currentWorkload * 0.2)); // Penalize employees with more tasks
-            const finalScore = skillMatchScore * workloadFactor;
-            
-            return {
-              employee,
-              skillMatchScore,
-              workload: currentWorkload,
-              finalScore
-            };
-          })
-        );
+        // Evaluate each worker's fit for the task
+        const rankedEmployees = workers.map(employee => {
+          // Check if employee has at least one matching skill
+          const hasMatchingSkills = employee.skills.some(skill => 
+            task.skills.some(taskSkill => 
+              taskSkill.toLowerCase().includes(skill.toLowerCase()) || 
+              skill.toLowerCase().includes(taskSkill.toLowerCase())
+            )
+          );
+          
+          // Count matching skills
+          const matchingSkillsCount = employee.skills.filter(skill => 
+            task.skills.some(taskSkill => 
+              taskSkill.toLowerCase().includes(skill.toLowerCase()) || 
+              skill.toLowerCase().includes(taskSkill.toLowerCase())
+            )
+          ).length;
+          
+          // Calculate skill match ratio
+          const skillMatchRatio = task.skills.length > 0 ? 
+            matchingSkillsCount / task.skills.length : 0;
+          
+          // Get current workload
+          const currentWorkload = employeeWorkload.get(employee.id) || 0;
+          
+          // Calculate workload factor (lower workload is better)
+          const workloadFactor = 1 / (1 + (currentWorkload * 0.2));
+          
+          // Calculate final score - prioritize having at least one skill match, 
+          // then consider skill match ratio and workload
+          const finalScore = hasMatchingSkills ? 
+            (0.6 * skillMatchRatio + 0.4 * workloadFactor) : 
+            (0.2 * workloadFactor);
+          
+          return {
+            employee,
+            hasMatchingSkills,
+            matchingSkillsCount,
+            skillMatchRatio,
+            workload: currentWorkload,
+            finalScore
+          };
+        });
 
         // Sort by final score (descending)
         rankedEmployees.sort((a, b) => b.finalScore - a.finalScore);
 
         // Select the best employee if they meet minimum threshold
+        // Now we only require ONE matching skill, but still score based on overall match
         const bestMatch = rankedEmployees[0];
-        if (bestMatch && bestMatch.finalScore >= 0.3) {
+        if (bestMatch && bestMatch.hasMatchingSkills) {
           // Update the workload for this employee
           employeeWorkload.set(
             bestMatch.employee.id,

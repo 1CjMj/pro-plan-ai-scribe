@@ -55,11 +55,11 @@ const TaskSkillsDisplay = ({
         )}
       </div>
       
-      {resources.length > 0 && (
+      {resources && resources.length > 0 && (
         <div className="flex flex-wrap gap-1 mt-1">
           {resources.slice(0, 2).map((resource, index) => (
             <Badge key={index} variant="outline" className="bg-green-50 text-green-700 hover:bg-green-100">
-              {resourceNames[resource.resourceId] || 'Resource'} ({resource.amount})
+              {resourceNames[resource.resourceId] || 'Unknown Resource'} ({resource.amount})
             </Badge>
           ))}
           
@@ -76,7 +76,7 @@ const TaskSkillsDisplay = ({
                   <div className="flex flex-wrap gap-1">
                     {resources.map((resource, index) => (
                       <Badge key={index} variant="outline" className="bg-green-50 text-green-700">
-                        {resourceNames[resource.resourceId] || 'Resource'} ({resource.amount})
+                        {resourceNames[resource.resourceId] || 'Unknown Resource'} ({resource.amount})
                       </Badge>
                     ))}
                   </div>

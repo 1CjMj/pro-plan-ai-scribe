@@ -60,7 +60,7 @@ const TaskAssigneeSelect = ({
       const taskCount = employeeTaskCount[employee.id] || 0;
       const workloadFactor = 1 / (1 + (taskCount * 0.2)); // Penalize employees with more tasks
       
-      // Calculate preliminary skill match (will be updated asynchronously)
+      // Check if employee has at least one matching skill (simplified matching)
       const hasMatchingSkills = employee.skills.some(skill => 
         taskSkills.some(taskSkill => 
           taskSkill.toLowerCase().includes(skill.toLowerCase()) || 
@@ -68,13 +68,27 @@ const TaskAssigneeSelect = ({
         )
       );
       
+      // Count how many skills match
+      const matchingSkillsCount = employee.skills.filter(skill => 
+        taskSkills.some(taskSkill => 
+          taskSkill.toLowerCase().includes(skill.toLowerCase()) || 
+          skill.toLowerCase().includes(taskSkill.toLowerCase())
+        )
+      ).length;
+      
+      // Calculate skill match ratio - how many of the task skills are matched
+      const skillMatchRatio = taskSkills.length > 0 ? matchingSkillsCount / taskSkills.length : 0;
+      
       return {
         ...employee,
         taskCount,
         workloadFactor,
         hasMatchingSkills,
-        // Initial score based on workload and simple skill matching
-        score: hasMatchingSkills ? workloadFactor * 1.5 : workloadFactor
+        matchingSkillsCount,
+        // Score prioritizes having at least one skill, then considers skill match ratio and workload
+        score: hasMatchingSkills 
+          ? (0.6 * skillMatchRatio + 0.4 * workloadFactor) 
+          : (0.2 * workloadFactor) // Lower score if no skills match
       };
     }).sort((a, b) => b.score - a.score); // Sort by score descending
   }, [taskSkills, workers, employeeTaskCount]);
@@ -111,11 +125,6 @@ const TaskAssigneeSelect = ({
       setIsAssigning(false);
     }
   };
-  
-  // Get the current assignee name
-  const currentAssigneeName = currentAssigneeId 
-    ? workers.find(emp => emp.id === currentAssigneeId)?.name || "Unknown"
-    : "Unassigned";
   
   return (
     <Select 
