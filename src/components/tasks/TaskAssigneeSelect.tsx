@@ -10,6 +10,7 @@ import {
 import { useToast } from '@/components/ui/use-toast';
 import { calculateSkillMatch } from '@/utils/ai';
 import { getWorkers } from '@/utils/workerUtils';
+import { useProjects } from '@/contexts/ProjectContext';
 
 interface TaskAssigneeSelectProps {
   currentAssigneeId?: string;
@@ -26,22 +27,37 @@ const TaskAssigneeSelect = ({
 }: TaskAssigneeSelectProps) => {
   const { toast } = useToast();
   const [isAssigning, setIsAssigning] = useState(false);
+  const { projects } = useProjects();
   
   // Get workers
   const workers = getWorkers();
   
+  // Count actual tasks assigned to each employee from projects data
+  const employeeTaskCount = useMemo(() => {
+    const counts: Record<string, number> = {};
+    
+    // Initialize counts for all workers
+    workers.forEach(worker => {
+      counts[worker.id] = 0;
+    });
+    
+    // Count tasks assigned to each employee across all projects
+    projects.forEach(project => {
+      project.tasks.forEach(task => {
+        if (task.assignedTo && counts[task.assignedTo] !== undefined) {
+          counts[task.assignedTo]++;
+        }
+      });
+    });
+    
+    return counts;
+  }, [projects, workers]);
+
   // Generate recommendation scores for employees based on skills and workload
   const rankedEmployees = useMemo(() => {
-    // Function to count tasks per employee
-    const getEmployeeTaskCount = (employeeId: string): number => {
-      // This is a simplified approach, ideally we'd get this from context
-      return workers.reduce((count, emp) => 
-        emp.id === employeeId ? count + 1 : count, 0);
-    };
-
     // Create a copy of employees with scores
     return [...workers].map(employee => {
-      const taskCount = getEmployeeTaskCount(employee.id);
+      const taskCount = employeeTaskCount[employee.id] || 0;
       const workloadFactor = 1 / (1 + (taskCount * 0.2)); // Penalize employees with more tasks
       
       // Calculate preliminary skill match (will be updated asynchronously)
@@ -61,7 +77,7 @@ const TaskAssigneeSelect = ({
         score: hasMatchingSkills ? workloadFactor * 1.5 : workloadFactor
       };
     }).sort((a, b) => b.score - a.score); // Sort by score descending
-  }, [taskSkills, workers]);
+  }, [taskSkills, workers, employeeTaskCount]);
 
   const handleAssigneeChange = async (userId: string) => {
     if (userId === currentAssigneeId) return;

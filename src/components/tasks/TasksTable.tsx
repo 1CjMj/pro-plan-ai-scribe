@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Table, 
   TableBody, 
@@ -12,6 +12,7 @@ import { useProjects, Task, Resource } from '@/contexts/ProjectContext';
 import TaskSkillsDisplay from './TaskSkillsDisplay';
 import TaskAssigneeSelect from './TaskAssigneeSelect';
 import { Badge } from '@/components/ui/badge';
+import { getWorkers } from '@/utils/workerUtils';
 import {
   HoverCard,
   HoverCardContent,
@@ -25,6 +26,8 @@ interface TasksTableProps {
 
 const TasksTable: React.FC<TasksTableProps> = ({ tasks, showProject = false }) => {
   const { resources, getProjectById, assignTask } = useProjects();
+  // Track assigned tasks to trigger UI updates
+  const [assignedTasks, setAssignedTasks] = useState<Record<string, string>>({});
   
   // Create a map of resource IDs to resource names
   const resourceNames = resources.reduce<Record<string, string>>((acc, resource) => {
@@ -34,6 +37,12 @@ const TasksTable: React.FC<TasksTableProps> = ({ tasks, showProject = false }) =
   
   const handleAssignTask = async (taskId: string, projectId: string, userId: string, userName: string) => {
     await assignTask(taskId, projectId, userId, userName);
+    
+    // Update local state to ensure UI reflects the change immediately
+    setAssignedTasks(prev => ({
+      ...prev,
+      [taskId]: userId || ""
+    }));
   };
   
   return (
@@ -60,6 +69,19 @@ const TasksTable: React.FC<TasksTableProps> = ({ tasks, showProject = false }) =
             tasks.map((task) => {
               const project = getProjectById(task.projectId);
               const isDescriptionTruncated = task.description && task.description.length > 50;
+              
+              // Use either the assigned value from state (if changed) or from the task data
+              const currentAssigneeId = assignedTasks[task.id] !== undefined 
+                ? assignedTasks[task.id] 
+                : task.assignedTo;
+                
+              // Update assignee name based on the current assignee ID
+              let assigneeName = "Unassigned";
+              if (currentAssigneeId) {
+                const workers = getWorkers();
+                const worker = workers.find(w => w.id === currentAssigneeId);
+                assigneeName = worker?.name || "Unknown";
+              }
               
               return (
                 <TableRow key={task.id}>
@@ -114,12 +136,12 @@ const TasksTable: React.FC<TasksTableProps> = ({ tasks, showProject = false }) =
                   </TableCell>
                   
                   <TableCell>
-                    {task.assignedToName || "Unassigned"}
+                    {assigneeName}
                   </TableCell>
                   
                   <TableCell className="text-right">
                     <TaskAssigneeSelect
-                      currentAssigneeId={task.assignedTo}
+                      currentAssigneeId={currentAssigneeId}
                       taskSkills={task.skills}
                       onAssign={(userId, userName) => 
                         handleAssignTask(task.id, task.projectId, userId, userName)

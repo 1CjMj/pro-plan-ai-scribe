@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import { useProjects, TaskStatus } from '@/contexts/ProjectContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -7,7 +8,18 @@ import TasksTable from '@/components/tasks/TasksTable';
 
 const Tasks = () => {
   const { projects } = useProjects();
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState<TaskStatus | 'all'>('all');
+  
+  // Check for tab parameter in the URL
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tabParam = params.get('tab');
+    
+    if (tabParam === 'completed') {
+      setActiveTab('completed');
+    }
+  }, [location]);
   
   // Gather all tasks from all projects
   const allTasks = projects.flatMap(project => 
@@ -41,7 +53,6 @@ const Tasks = () => {
         </header>
         
         <Tabs 
-          defaultValue="all" 
           value={activeTab}
           onValueChange={(value) => setActiveTab(value as TaskStatus | 'all')}
         >
