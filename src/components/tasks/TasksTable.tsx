@@ -12,6 +12,11 @@ import { useProjects, Task, Resource } from '@/contexts/ProjectContext';
 import TaskSkillsDisplay from './TaskSkillsDisplay';
 import TaskAssigneeSelect from './TaskAssigneeSelect';
 import { Badge } from '@/components/ui/badge';
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 interface TasksTableProps {
   tasks: Task[];
@@ -54,13 +59,25 @@ const TasksTable: React.FC<TasksTableProps> = ({ tasks, showProject = false }) =
           ) : (
             tasks.map((task) => {
               const project = getProjectById(task.projectId);
+              const isDescriptionTruncated = task.description && task.description.length > 50;
               
               return (
                 <TableRow key={task.id}>
                   <TableCell className="font-medium">
                     <div>{task.title}</div>
                     <div className="text-sm text-muted-foreground truncate max-w-[300px]">
-                      {task.description}
+                      {isDescriptionTruncated ? (
+                        <HoverCard>
+                          <HoverCardTrigger className="cursor-help">
+                            {task.description.substring(0, 50)}...
+                          </HoverCardTrigger>
+                          <HoverCardContent className="w-80">
+                            <p className="text-sm">{task.description}</p>
+                          </HoverCardContent>
+                        </HoverCard>
+                      ) : (
+                        task.description
+                      )}
                     </div>
                   </TableCell>
                   
