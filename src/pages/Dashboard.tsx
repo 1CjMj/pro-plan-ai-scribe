@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useProjects } from '@/contexts/ProjectContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
@@ -274,7 +275,9 @@ const ManagerDashboard = () => {
 const WorkerDashboard = () => {
   const { currentUser } = useAuth();
   const { getTasksByUserId } = useProjects();
+  const navigate = useNavigate();
   
+  // Get the tasks for the current user
   const tasks = currentUser ? getTasksByUserId(currentUser.id) : [];
   
   const notStartedTasks = tasks.filter(t => t.status === 'not-started');
@@ -286,7 +289,7 @@ const WorkerDashboard = () => {
       <header>
         <h1 className="text-3xl font-bold tracking-tight">My Dashboard</h1>
         <p className="text-muted-foreground">
-          Overview of your assigned tasks
+          Welcome, {currentUser?.name} - Overview of your assigned tasks
         </p>
       </header>
 
@@ -431,7 +434,17 @@ const WorkerDashboard = () => {
 };
 
 const Dashboard = () => {
-  const { isManager, isWorker } = useAuth();
+  const { isManager, isWorker, currentUser, loading } = useAuth();
+  const navigate = useNavigate();
+  
+  // This effect will handle proper redirection after login/logout
+  useEffect(() => {
+    // If user is authenticated and the component has finished loading
+    if (!loading && currentUser) {
+      // Force navigation to dashboard to ensure correct dashboard view is loaded
+      navigate('/dashboard', { replace: true });
+    }
+  }, [currentUser, loading, navigate]);
   
   return (
     <Layout requiresAuth>

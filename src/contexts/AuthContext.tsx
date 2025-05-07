@@ -1,6 +1,7 @@
 
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 export type UserRole = 'manager' | 'worker';
 
@@ -85,6 +86,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = () => {
     setCurrentUser(null);
     localStorage.removeItem('currentUser');
+    
+    // Force a page reload after logout to clear any cached state
+    window.location.href = '/login';
+    
     toast({
       title: "Logged out",
       description: "You have been logged out successfully",
