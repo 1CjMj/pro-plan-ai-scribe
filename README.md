@@ -7,7 +7,7 @@ TaskMaster (formerly ProPlanAI) is an advanced project management application th
 
 ### For Project Managers
 
-- **AI Task Generation**: Convert project descriptions into detailed task lists with required skills, resources, and estimated time using Google Gemini AI.
+- **AI Task Generation**: Convert project descriptions into detailed task lists with required skills, resources, and estimated time.
 - **Smart Task Allocation**: Automatically assign tasks to team members based on skills matching, workload balancing, and resource availability.
 - **Resource Management**: Track and optimize resource allocation across all projects.
 - **Progress Tracking**: Monitor task completion status and overall project progress.
@@ -43,7 +43,7 @@ The backend is built with Flask and exposes several AI-powered endpoints:
 
 ### AI Integration Details
 
-The system integrates Google Gemini AI models for genuine AI-powered functionality:
+The system integrates multiple AI models and components:
 
 #### 1. Task Generation AI (Google Gemini)
 
@@ -87,9 +87,8 @@ The system integrates Google Gemini AI models for genuine AI-powered functionali
 
 2. **Task Generation Flow**:
    - Project description is sent to the appropriate AI endpoint based on category
-   - Backend AI processes description using Google Gemini
-   - Structured task data is returned and added to project
-   - Tasks are displayed in the UI with clear labels showing they were AI-generated
+   - Backend AI processes description and returns structured task data
+   - Tasks are added to project and displayed in the UI
 
 3. **Task Assignment Flow**:
    - System analyzes task requirements and employee skills
@@ -111,7 +110,7 @@ The system integrates Google Gemini AI models for genuine AI-powered functionali
 - **Routing**: React Router
 - **Charts**: Recharts for data visualization
 - **Icons**: Lucide React
-- **AI Integration**: Google Gemini API
+- **AI Integration**: Google Gemini API (formerly PaLM)
 - **Backend**: Flask (Python)
 - **Natural Language Processing**: Custom algorithms for skill matching
 
