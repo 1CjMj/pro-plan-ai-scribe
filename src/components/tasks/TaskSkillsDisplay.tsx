@@ -1,17 +1,14 @@
 
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
-import { 
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface TaskSkillsDisplayProps {
   skills: string[];
@@ -26,6 +23,7 @@ const TaskSkillsDisplay = ({
   resourceNames = {}, 
   maxDisplay = 3 
 }: TaskSkillsDisplayProps) => {
+  const isMobile = useIsMobile();
   const displaySkills = skills.slice(0, maxDisplay);
   const hiddenSkillsCount = Math.max(0, skills.length - maxDisplay);
   
@@ -53,7 +51,7 @@ const TaskSkillsDisplay = ({
         ))}
         
         {hiddenSkillsCount > 0 && (
-          <TooltipProvider>
+          <TooltipProvider skipDelayDuration={0}>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Badge variant="outline" className="bg-gray-100 text-gray-700 hover:bg-gray-200 cursor-help">
@@ -86,7 +84,7 @@ const TaskSkillsDisplay = ({
           ))}
           
           {processedResources.length > 2 && (
-            <TooltipProvider>
+            <TooltipProvider skipDelayDuration={0}>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Badge variant="outline" className="bg-gray-100 text-gray-700 hover:bg-gray-200 cursor-help">

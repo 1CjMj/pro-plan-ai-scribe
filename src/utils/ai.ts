@@ -77,7 +77,10 @@ For each task, please provide:
 - Resources: [Comma-separated list of resources needed]
 - Time: [Estimated time in days]
 
-Generate at least 5 tasks that cover the entire project lifecycle.`;
+IMPORTANT: Each task must be focused on a single objective. If you identify tasks that have multiple components, please split them into separate tasks. Generate at least 8-10 focused, specific tasks rather than a few broad ones.
+
+Make sure each task is clear, specific, and actionable.
+`;
 
     // Call the Gemini API
     const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GEMINI_API_KEY, {
