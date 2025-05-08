@@ -23,6 +23,20 @@ const TaskSkillsDisplay = ({
   const displaySkills = skills.slice(0, maxDisplay);
   const hiddenSkillsCount = Math.max(0, skills.length - maxDisplay);
   
+  // Process resources to display either the resource name from resourceNames
+  // or directly use resourceId if it's a plain string (from AI generation)
+  const processedResources = resources.map(resource => {
+    let displayName = resourceNames[resource.resourceId] || resource.resourceId;
+    // If resourceId contains spaces or looks like a descriptive name, use it directly
+    if (resource.resourceId && (resource.resourceId.includes(' ') || !resource.resourceId.startsWith('resource-'))) {
+      displayName = resource.resourceId;
+    }
+    return {
+      ...resource,
+      displayName
+    };
+  });
+  
   return (
     <div className="space-y-2">
       <div className="flex flex-wrap gap-1">
@@ -57,26 +71,26 @@ const TaskSkillsDisplay = ({
       
       {resources && resources.length > 0 && (
         <div className="flex flex-wrap gap-1 mt-1">
-          {resources.slice(0, 2).map((resource, index) => (
+          {processedResources.slice(0, 2).map((resource, index) => (
             <Badge key={index} variant="outline" className="bg-green-50 text-green-700 hover:bg-green-100">
-              {resourceNames[resource.resourceId] || 'Unknown Resource'} ({resource.amount})
+              {resource.displayName} ({resource.amount})
             </Badge>
           ))}
           
-          {resources.length > 2 && (
+          {processedResources.length > 2 && (
             <HoverCard>
               <HoverCardTrigger asChild>
                 <Badge variant="outline" className="bg-gray-100 text-gray-700 hover:bg-gray-200 cursor-help">
-                  +{resources.length - 2} more
+                  +{processedResources.length - 2} more
                 </Badge>
               </HoverCardTrigger>
               <HoverCardContent className="max-w-xs">
                 <div className="text-sm">
                   <p className="font-medium mb-1">All resources:</p>
                   <div className="flex flex-wrap gap-1">
-                    {resources.map((resource, index) => (
+                    {processedResources.map((resource, index) => (
                       <Badge key={index} variant="outline" className="bg-green-50 text-green-700">
-                        {resourceNames[resource.resourceId] || 'Unknown Resource'} ({resource.amount})
+                        {resource.displayName} ({resource.amount})
                       </Badge>
                     ))}
                   </div>
