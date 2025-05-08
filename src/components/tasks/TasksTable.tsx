@@ -14,10 +14,11 @@ import TaskAssigneeSelect from './TaskAssigneeSelect';
 import { Badge } from '@/components/ui/badge';
 import { getWorkers } from '@/utils/workerUtils';
 import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface TasksTableProps {
   tasks: Task[];
@@ -89,14 +90,16 @@ const TasksTable: React.FC<TasksTableProps> = ({ tasks, showProject = false }) =
                     <div>{task.title}</div>
                     <div className="text-sm text-muted-foreground truncate max-w-[300px]">
                       {isDescriptionTruncated ? (
-                        <HoverCard>
-                          <HoverCardTrigger className="cursor-help">
-                            {task.description.substring(0, 50)}...
-                          </HoverCardTrigger>
-                          <HoverCardContent className="w-80">
-                            <p className="text-sm">{task.description}</p>
-                          </HoverCardContent>
-                        </HoverCard>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger className="cursor-help text-left">
+                              {task.description.substring(0, 50)}...
+                            </TooltipTrigger>
+                            <TooltipContent className="w-80">
+                              <p className="text-sm">{task.description}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       ) : (
                         task.description
                       )}

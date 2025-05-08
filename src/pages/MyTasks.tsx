@@ -17,6 +17,12 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 import { 
   CheckCircle2, 
@@ -33,6 +39,8 @@ const TaskCard = ({ task, onStatusChange }: {
   task: any; 
   onStatusChange: (taskId: string, projectId: string, status: TaskStatus) => void;
 }) => {
+  const isDescriptionTruncated = task.description && task.description.length > 100;
+  
   return (
     <Card className="hover:border-primary/20 transition-colors">
       <CardContent className="p-6">
@@ -42,7 +50,22 @@ const TaskCard = ({ task, onStatusChange }: {
           </span>
         </div>
         <h3 className="text-lg font-medium mb-1">{task.title}</h3>
-        <p className="text-muted-foreground line-clamp-2 mb-3">{task.description}</p>
+        {isDescriptionTruncated ? (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <p className="text-muted-foreground line-clamp-2 mb-3 cursor-help">
+                  {task.description.substring(0, 100)}...
+                </p>
+              </TooltipTrigger>
+              <TooltipContent className="w-80 max-w-[90vw]">
+                <p className="text-sm">{task.description}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ) : (
+          <p className="text-muted-foreground line-clamp-2 mb-3">{task.description}</p>
+        )}
         
         <div className="mt-auto space-y-3 pt-3 border-t">
           <div className="flex flex-wrap gap-1">
