@@ -386,25 +386,27 @@ const Employees = () => {
                             </Badge>
                           ))}
                           {employee.skills.length > 3 && (
-                            <HoverCard>
-                              <HoverCardTrigger asChild>
-                                <Badge variant="outline" className="bg-slate-50 text-slate-700 dark:bg-slate-800 dark:text-slate-200 cursor-help">
-                                  +{employee.skills.length - 3}
-                                </Badge>
-                              </HoverCardTrigger>
-                              <HoverCardContent className="max-w-xs">
-                                <div className="text-sm">
-                                  <p className="font-medium mb-1">All skills:</p>
-                                  <div className="flex flex-wrap gap-1">
-                                    {employee.skills.map((skill, index) => (
-                                      <Badge key={index} variant="outline" className="bg-slate-50 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
-                                        {skill}
-                                      </Badge>
-                                    ))}
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Badge variant="outline" className="bg-slate-50 text-slate-700 dark:bg-slate-800 dark:text-slate-200 cursor-help">
+                                    +{employee.skills.length - 3}
+                                  </Badge>
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-xs">
+                                  <div className="text-sm">
+                                    <p className="font-medium mb-1">All skills:</p>
+                                    <div className="flex flex-wrap gap-1">
+                                      {employee.skills.map((skill, index) => (
+                                        <Badge key={index} variant="outline" className="bg-slate-50 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                                          {skill}
+                                        </Badge>
+                                      ))}
+                                    </div>
                                   </div>
-                                </div>
-                              </HoverCardContent>
-                            </HoverCard>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
                           )}
                         </div>
                       </TableCell>
