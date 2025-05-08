@@ -90,7 +90,7 @@ const TasksTable: React.FC<TasksTableProps> = ({ tasks, showProject = false }) =
                     <div>{task.title}</div>
                     <div className="text-sm text-muted-foreground truncate max-w-[300px]">
                       {isDescriptionTruncated ? (
-                        <TooltipProvider>
+                        <TooltipProvider skipDelayDuration={0}>
                           <Tooltip>
                             <TooltipTrigger className="cursor-help text-left">
                               {task.description.substring(0, 50)}...
